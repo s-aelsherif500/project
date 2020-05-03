@@ -1,0 +1,17 @@
+.container-paper{
+    width: 90%;
+    margin:auto;
+    -webkit-box-shadow: 1px 3px 38px -6px rgba(115,115,115,0.72);
+    -moz-box-shadow: 1px 3px 38px -6px rgba(115,115,115,0.72);
+    box-shadow: 1px 3px 38px -6px rgba(115,115,115,0.72);
+    margin-top: 30px;
+    padding: 30px;
+    border-radius: 20px;
+}
+.container-list{
+    margin: 90%;
+    padding: 20px;
+    margin: auto;
+    border-radius: 5px;
+    border: 1px solid rgba(115,115,115,0.72);
+}

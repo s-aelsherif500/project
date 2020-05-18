@@ -1,59 +1,127 @@
 import React, { Component } from 'react';
 import Header from './HeaderComponent'
 import {Jumbotron, Button, ButtonGroup} from 'reactstrap';
-class GroupDetails extends Component {
-    constructor(props){
-        super(props)
-        this.state={
-            group:this.props.group
-        }
-    }
-    render(){
+import {Loading} from './LoadingComponent'
+import EditGroup from './Modals/EditGroup'
+import {Link} from 'react-router-dom'
+function RenderParticipants ({group, isLoading, errMess, all_participants,postUpdateGroup}) {
+
+    if (isLoading) {
         return(
-            <>  
-                <Header />
+            <>
+                <Loading />
+            </>
+        )
+    }else if (errMess){
+        return(
+            <>
+                <h3 className="text-danger">{errMess}</h3>
+            </>
+        )
+    }else {
+        let count = 0;
+        var participants = group.participants.map((person) => 
+            {
+                return(
+                    
+                    <tr>
+                        <th scope="row">{count+=1}</th>
+                        <td>{person.first_name}</td>
+                        <td>{person.last_name}</td>
+                        <td>{person.email}</td>      
+                        <td>
+                            <ButtonGroup>
+                                <Button color="warning">
+                                    <i className="fa fa-paper-plane" aria-hidden="true"></i>
+                                </Button>
+                            </ButtonGroup>
+                        </td>
+                    </tr>
+                )
+            })
+        
+        return(
+            <>
+                <h3>{group.name} </h3>
+                <h5>Created at {group.created_at}</h5>
+                <h5>Updated at {group.updated_at}</h5>
+                <EditGroup buttonLabel={''} all_participants={all_participants} 
+                    postUpdateGroup={postUpdateGroup}
+                    name={group.name}
+                    id={group.id} 
+                    participants={group.participants}/>
+                <hr />
+                <div className="container-list table-responsive">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th scope="col"><b>#</b></th>
+                                <th scope="col"><b>First Name</b></th>
+                                <th scope="col"><b>Last Name</b></th>
+                                <th scope="col"><b>Email</b></th>
+                                <th scope="col"><b>Options</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {participants}
+                        </tbody>
+                    </table>
+                </div>
+            </>
+        )
+    }
+}
+function FinalRender ({Auth,group, isLoading, errMess, all_participants,fetchLOGOUT,postUpdateGroup}){
+    if (Auth=="null") {
+        return(
+            <div className="container-paper">
+                <h1>This page is Authorized</h1>
+                <hr/>
+                <br/>
+                <div className="">
+                    You can't see the page untill you <Link to="/login">sign in</Link>
+                </div>
+            </div>
+        )
+    }else {
+        return(
+            <>
+                <Header fetchLOGOUT = {fetchLOGOUT}/>
                 <div className="container-paper">
                 <h1>Groups</h1>
                     <hr/>
                     <Jumbotron>
-                        <h3>Group no.{this.state.group.id} </h3>
-                        <hr />
-                        <table className="table">
-                        <thead>
-                            <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Survey</th>
-                            <th scope="col">Info</th>
-                            <th scope="col">Start Date</th>
-                            <th scope="col">End Date</th>
-                            <th scope="col">no.of sendings</th>
-                            <th scope="col">Options</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.state.group.survey.map((survey) => 
-                                    <tr>
-                                        <th scope="row">{survey.id}</th>
-                                        <td>{survey.name}</td>
-                                        <td>{survey.info}</td>
-                                        <td>{survey.startDate}</td>
-                                        <td>{survey.endDate}</td>
-                                        <td><b>T</b> {survey.sent}</td>       
-                                        <td>
-                                            <ButtonGroup>
-                                                <Button key={survey.id} color="warning">
-                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i>
-                                                </Button>
-                                            </ButtonGroup>
-                                        </td>
-                                    </tr>
-                                )
-                            }
-                        </tbody>
-                        </table>
+                        <RenderParticipants
+                                    all_participants={all_participants} 
+                                    group={group}
+                                    isLoading={isLoading}
+                                    errMess={errMess}
+                                    postUpdateGroup={postUpdateGroup} />
                     </Jumbotron>
                 </div>
+            </>
+        )
+    }
+}
+class GroupDetails extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+        }
+    }
+    render(){
+        console.log("RENDER GROUP", this.props.group)
+        console.log(this.props)
+        return(
+            <>      
+                <FinalRender 
+                    Auth={localStorage.getItem("token")} 
+                    all_participants={this.props.list} 
+                    group={this.props.group}
+                    isLoading={this.props.isLoading}
+                    errMess={this.props.errMess}
+                    postUpdateGroup={this.props.postUpdateGroup} />
+                />
             </>
         )
     }

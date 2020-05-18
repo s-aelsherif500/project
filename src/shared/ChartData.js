@@ -1,15 +1,24 @@
 const ChartData = {
-labels: ['Boston', 'Worcester', 'Springfield', 'Lowell', 'Cambridge', 'New Bedford'],
+labels: [
+    'Parktijkschool Terra Nigra',
+    'Bernard Lievegoed School', 
+    'Bonnefanten College',
+    'Sint-Maartenscollege',
+    'Porta Mosana College', 
+    'Stella Maris College',
+    'St. Michael', 
+    'World College',
+    'VISTA College',
+    'CITAVERDE College',
+    'Zuyd Hogeschool',
+    'Maastricht University',
+    'School Notenboom',
+    'Others'],
 datasets:[
     {
-    label:'Population',
+    label:'Schools',
     data:[
-        617594,
-        181045,
-        153060,
-        106519,
-        105162,
-        95072
+        34, 4, 56, 4, 56, 5, 5, 70, 43, 5, 56, 34, 0, 20
     ],
     backgroundColor:[
         'rgba(255, 99, 132, 0.6)',
@@ -18,7 +27,14 @@ datasets:[
         'rgba(75, 192, 192, 0.6)',
         'rgba(153, 102, 255, 0.6)',
         'rgba(255, 159, 64, 0.6)',
-        'rgba(255, 99, 132, 0.6)'
+        'rgba(255, 99, 132, 0.6)',
+        '#2471A3',
+        '#F1C40F',
+        '#C0392B',
+        '#273746',
+        '#0E6655',
+        '#4A235A',
+        '#707B7C',
     ]
     }
 ]

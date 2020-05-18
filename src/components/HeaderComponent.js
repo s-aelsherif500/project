@@ -12,6 +12,12 @@ class Header extends Component {
             isModalOpen: false,
         };
         this.toggleNav = this.toggleNav.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+      }
+      handleClick(){
+        console.log(this.props)
+        this.props.fetchLOGOUT();
+        window.location.href='/login'
       }
 
       toggleNav() {
@@ -20,6 +26,7 @@ class Header extends Component {
         });
       }
       componentDidMount(){
+        console.log(this.props)
         const indicator = document.querySelector(".nav-indicator");
         const items = document.querySelectorAll(".nav-item");
         
@@ -71,7 +78,7 @@ class Header extends Component {
                     </Nav>
                     <Nav className="ml-auto nav npc" navbar>
                         <NavItem>
-                            <NavLink className="nav-link" to="/login">Logout</NavLink>
+                            <NavLink className="nav-link" to='' onClick={this.handleClick}>Logout</NavLink>
                         </NavItem>
                     </Nav>
                 </Collapse>

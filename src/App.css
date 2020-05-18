@@ -2,6 +2,7 @@
 @import "./css/EveryPage.css";
 @import "./css/List.css";
 @import "./css/PageAnimation.css";
+@import "./css/LoadingSpinner.css";
 
 *{
     font-family: 'quicksand',Arial, Helvetica, sans-serif;

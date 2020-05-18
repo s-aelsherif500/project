@@ -1,4 +1,4 @@
-const Data = 
+const Persons = 
 [
     {
         id: 0,
@@ -46,4 +46,4 @@ const Data =
         endDate:'2020-04-26 05:30:04'
     },
 ]
-export default Data
+export default Persons

@@ -16,12 +16,11 @@ function Options ({all_participants, onChange}) {
     )
   } else {
     let count=0;
-    console.log(all_participants.list.data)
     let Table = all_participants.list.data.map((person)=>{
-      console.log(person)
+      count+=1;
       return(
-        <tr>
-            <th scope="row">{count+=1}</th>
+        <tr key={count}>
+            <th scope="row">{count}</th>
             <td><input type="checkbox" value={person.id} onChange={onChange} /></td>
             <td><b>{person.first_name}:</b></td>
             <td>{`"${person.email}"`}</td>
@@ -34,11 +33,9 @@ function Options ({all_participants, onChange}) {
           <div className="container-list table-responsive">
             <table className="table">
                 <tbody>
-                  <tr>
                     {
                         Table
                     }
-                  </tr>
                 </tbody>
             </table>
           </div>
@@ -69,7 +66,6 @@ class AddGroup extends Component {
       this.setState({
           [event.target.name]:event.target.value
       })
-      console.log(event.target.name, event.target.value)
   }
   checkOnChange(e) {
     // current array of options
@@ -88,7 +84,6 @@ class AddGroup extends Component {
 
     // update the state with the new array of options
     this.setState({ participants: options })
-    console.log(this.state.participants)
   }
   handleSubmit=(event)=>{
       console.log(this.props)
@@ -98,7 +93,6 @@ class AddGroup extends Component {
       window.location.href="/groups"
   }
   render(){
-      console.log(this.state)
     return (
       <React.Fragment>
         <Button color="success" onClick={this.toggleModal} className="add-member btn btn-success"><i className="fa fa-plus"></i> Add Group</Button>

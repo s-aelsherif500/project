@@ -4,20 +4,19 @@ import {
     Button, Modal, ModalHeader, ModalBody, Row, Col, Label, Jumbotron, Input } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
-const required = (val) => val && val.length;
-const maxLength = (len) => (val) => !(val) || (val.length <= len);
-const minLength = (len) => (val) => val && (val.length >= len);
 
 class QForm extends Component {
     constructor(props){
         super(props)
         this.state = {
             isModalOpen: false,
-            newForm:"",
-            choices:[],
-            fullForm:[]
+            newQuestion:"input",
+            items:[],
+            text:"",
+            type:""
         };
         this.toggleModal = this.toggleModal.bind(this);
+        this.handleChange= this.handleChange.bind(this)
     }
     toggleModal() {
         this.setState({
@@ -30,26 +29,43 @@ class QForm extends Component {
         //console.log('loook at this :-',this.props.addComment(this.props.dishId, values.rating, values.author, values.comment))
     }
     handleChange(e){
-        console.log(e.target)
+        console.log(e.target.value)
         let choice = e.target.value
-        console.log(choice,choice=="input")
         if (choice=="input"){
             this.setState({
-                newForm:"input"
+                newQuestion:"input"
             })
         } else if (choice=="select"){
             this.setState({
-                newForm:"select"
+                newQuestion:"select"
             })
         }
 
     }
-    handleClick(values){
-        console.log(values)
+    onTextChange(event){
+        console.log(event.target.value)
         this.setState({
-            fullForm:[2]
+            text:event.target.value,
+            type:"text"
         })
-
+        console.log(this.state.type, "---", this.state.text)
+        console.log(event.target.name)
+    }
+    handleClick(event){
+        console.log("clicked")
+        let Q = {
+            text:this.state.text,
+            type:this.state.type
+        }
+        console.log(Q)
+        this.setState({
+            items:this.state.items.push(Q),
+        })
+        this.setState({
+            text:"",
+            type:""
+        })
+        console.log(this.state.items)
     }
     renderChoices(e){
         var t = e.target.value;
@@ -66,38 +82,46 @@ class QForm extends Component {
         })
     }
     
-    newForm = (newForm) => {
-        if (newForm=="input") {
+    newQuestion = (newQuestion,text,type) => {
+        if (newQuestion=="input") {
             return(
-                <Control.text model="input" id=""/>
+                <Col md={12}>
+                    <Input type="text" model="input" name={type} 
+                    onChange={(e) => this.onTextChange(e)} value={text} placeholder="Write your Question .."/>
+                </Col>
             )
-        }else if(newForm=="select"){
+        }else if(newQuestion=="select"){
             return(
                 <>
-                <Control.text model=".select" name="select" className="form-control" onChange={(e)=>this.renderChoices(e)} />
-                {
-                    this.state.choices.map((choice)=>{
-                        return(
-                            <>  
-                                <Label htmlFor={choice} md={2}>{choice+1}</Label>
-                                <Col md={10}>
-                                    <Input type="text" id={choice} name={choice} />
-                                </Col>
-                            </>
-                        )
-                    })
-                }
+                    <Col md={12}>
+                        <Input md={12} type="text" name="options"  className="form-control" placeholder="Write your question .." />
+                    </Col>
+                    <br />
+                    <br />
+                    <Col md={6}>
+                        <Input type="text" name="selectA"  className="form-control" placeholder="No. of choices .." md={4} onChange={(e)=>this.renderChoices(e)} />
+                    </Col>
+                    <br /> <br />
+                    <Col md={10}>
+                        {
+                                this.state.choices.map((choice)=>{
+                                    return(
+                                        <>  
+                                            <Label htmlFor={choice} md={1}>{choice+1}: </Label>
+                                            <Col md={10}>
+                                                <Input type="text" id={choice} name={choice} placeholder={`Choice ${choice+1}`} />
+                                            </Col>
+                                        </>
+                                    )
+                                })
+                        }
+                    </Col>
                 </>
             )
         }
     }
     
     render(){
-        const formic = this.state.fullForm.map(q => {
-            return(
-            <h4>{this.state.fullForm}</h4>
-            )
-        })
         return(
             <React.Fragment>
                 <Button outline onClick={this.toggleModal}>
@@ -107,13 +131,10 @@ class QForm extends Component {
                 <ModalHeader toggle={this.toggleModal}>Add Questions</ModalHeader>
                 <ModalBody>
                     <LocalForm onSubmit={(values)=>this.handleSubmit(values)}>
-                        {
-                            formic
-                        }
                         
                         <LocalForm onSubmit={(values)=>this.handleClick(values)}>
                             <Row className="form-group">
-                                {this.newForm(this.state.newForm)}
+                                {this.newQuestion(this.state.newQuestion, this.state.text, this.state.type)}
                             </Row>
                             <Row className="form-group">
                                 <Label htmlFor="qtype" md={12}>Choose a Question Type</Label>

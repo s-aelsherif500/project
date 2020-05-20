@@ -7,6 +7,9 @@ import Group from './GroupComponent'
 import Charts from './ChartComponent'
 import GroupDetails from './GroupDetails'
 import QuizForm from './QuizForm';  
+import UsersPage from './UsersComponent';
+import AddUser from './AddUserComponent'
+import UpdateUser from './UserDetailsComponet'
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { postLOGIN,
@@ -14,21 +17,28 @@ import { postLOGIN,
     fetchProfile,
     fetchParticipants,
     fetchGroups,
-    fetchQuizes, 
+    fetchQuizes,
+    fetchUsers, 
     postParticipant,
     postUpdatePart, 
     postDeletePart,
     postGroup,
     postUpdateGroup,
     postQuiz,
-    postUpdateQuiz } from '../redux/ActionCreators';
+    postUpdateQuiz,
+    postUser,
+    postUpdateUser,
+    postUpdatePassword,
+    postDeleteUser } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
       auth: state.auth,
       list:state.list,
+      profile:state.profile,
       groups:state.groups,
-      quizes:state.quizes
+      quizes:state.quizes,
+      users:state.users
     }
   }
 const mapDispatchToProps = dispatch => ({
@@ -40,11 +50,17 @@ const mapDispatchToProps = dispatch => ({
     postUpdateGroup: (name, id, participants) => dispatch(postUpdateGroup(name, id, participants)),
     postQuiz: (name,items) => dispatch(postQuiz(name,items)),
     postUpdateQuiz: (id,name,items) => dispatch(postUpdateQuiz(id,name,items)),
+    postUser: (username,password) => dispatch(postUser(username,password)),
+    postUpdateUser:(username,id) => dispatch(postUpdateUser(username,id)),
+    postUpdatePassword: (password,id) => dispatch(postUpdatePassword(password,id)),
+    postDeleteUser: (id) => dispatch(postDeleteUser(id)),
+
     fetchProfile: () => { dispatch(fetchProfile())},
     fetchLOGOUT : () => {dispatch(fetchLOGOUT())},
     fetchParticipants: () =>{ dispatch(fetchParticipants())},
     fetchGroups: () => {dispatch(fetchGroups())},
-    fetchQuizes: () => {dispatch(fetchQuizes())}
+    fetchQuizes: () => {dispatch(fetchQuizes())},
+    fetchUsers: () => {dispatch(fetchUsers())}
 });
 
 
@@ -56,9 +72,11 @@ class Main extends Component {
         }
     }
     componentDidMount(){
+        this.props.fetchProfile();
         this.props.fetchParticipants();
         this.props.fetchGroups();
         this.props.fetchQuizes();
+        this.props.fetchUsers();
     }
 
     render(){
@@ -69,15 +87,15 @@ class Main extends Component {
             return(
                 <>
                     <GroupDetails 
-                    group={(this.props.groups.groups.length!=0 && localStorage.getItem("token")!="null")? 
-                        this.props.groups.groups.data.filter((group) => group.id === parseInt(match.params.groupId,10))[0] 
-                        : {}
-                    }
-                    isLoading={this.props.groups.isLoading}
-                    errMess={this.props.groups.errMess}
-                    fetchLOGOUT = {this.props.fetchLOGOUT}
-                    list={this.props.list}
-                    postUpdateGroup={this.props.postUpdateGroup} />
+                        group={(this.props.groups.groups.length!=0 && localStorage.getItem("token")!="null")? 
+                            this.props.groups.groups.data.filter((group) => group.id === parseInt(match.params.groupId,10))[0] 
+                            : {}
+                        }
+                        isLoading={this.props.groups.isLoading}
+                        errMess={this.props.groups.errMess}
+                        fetchLOGOUT = {this.props.fetchLOGOUT}
+                        list={this.props.list}
+                        postUpdateGroup={this.props.postUpdateGroup} />
                 </>
             )
         }
@@ -90,7 +108,21 @@ class Main extends Component {
             return(
                 <>
                     <HomePage 
-                        fetchLOGOUT = {this.props.fetchLOGOUT} />
+                        fetchLOGOUT = {this.props.fetchLOGOUT}
+                        postUser = {this.props.postUser}
+                        user={this.props.profile.profile}
+                        isLoading={this.props.profile.isLoading}
+                        errMess={this.props.profile.errMess} />
+                </>
+            )
+        }
+        const Users = ()=>{
+            return(
+                <>
+                    <UsersPage fetchLOGOUT = {this.props.fetchLOGOUT}
+                        users={this.props.users.users.data}
+                        isLoading={this.props.users.isLoading}
+                        errMess={this.props.users.errMess} />
                 </>
             )
         }
@@ -104,18 +136,40 @@ class Main extends Component {
                 </>
             )
         }
+        const AddUserPage = () => {
+            return(
+                <>
+                    <AddUser 
+                        fetchLOGOUT={this.props.fetchLOGOUT}
+                        postUser={this.props.postUser}/>
+                </>
+            )
+        }
+        const UpdateUserPage = ({match}) =>{
+            return(
+                <UpdateUser 
+                    user={(this.props.users.users.length!=0 && localStorage.getItem("token")!="null")? 
+                            this.props.users.users.data.filter((user) => user.id === parseInt(match.params.userId,10))[0] 
+                            : {}
+                    }
+                    fetchLOGOUT={this.props.fetchLOGOUT}
+                    postUpdateUser={this.props.postUpdateUser}
+                    postUpdatePassword={this.props.postUpdatePassword} 
+                    postDeleteUser={this.props.postDeleteUser}/>
+            )
+        }
         const QuizPage = ({match}) =>{
             return(
                 <>
                     <QuizForm  
-                    quiz={(this.props.quizes.quizes.length!=0 && localStorage.getItem("token")!="null")? 
-                        this.props.quizes.quizes.data.filter((quiz) => quiz.id === parseInt(match.params.quizId,10))[0] 
-                        : {}
-                    }
-                    isLoading={this.props.quizes.isLoading}
-                    errMess={this.props.quizes.errMess}
-                    fetchLOGOUT = {this.props.fetchLOGOUT}
-                    postUpdateQuiz={this.props.postUpdateQuiz} />
+                        quiz={(this.props.quizes.quizes.length!=0 && localStorage.getItem("token")!="null")? 
+                            this.props.quizes.quizes.data.filter((quiz) => quiz.id === parseInt(match.params.quizId,10))[0] 
+                            : {}
+                        }
+                        isLoading={this.props.quizes.isLoading}
+                        errMess={this.props.quizes.errMess}
+                        fetchLOGOUT = {this.props.fetchLOGOUT}
+                        postUpdateQuiz={this.props.postUpdateQuiz} />
                 </>
             )
         } 
@@ -150,12 +204,15 @@ class Main extends Component {
                     <Switch>
                         <Route path="/login" component={LoginPage} />
                         <Route exact path="/home" component={Home} />
+                        <Route exact path="/users" component={Users} />
+                        <Route exact path="/users/add" component={AddUserPage} />
+                        <Route exact path="/users/:userId" component={UpdateUserPage} />
                         <Route exact path="/list" component={LIST} />
                         <Route exact path="/quizes" component={QuizesPage} />
                         <Route exact path="/groups" component={GroupPage} />
                         <Route exact path="/charts" component={ChartPage} />
-                        <Route path='/quizes/:quizId' component={QuizPage} />
-                        <Route path='/groups/:groupId' component={G_Details} />
+                        <Route exact path='/quizes/:quizId' component={QuizPage} />
+                        <Route exact path='/groups/:groupId' component={G_Details} />
                         <Redirect to={iniHref} />
                     </Switch>
         )

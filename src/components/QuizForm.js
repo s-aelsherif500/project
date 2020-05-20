@@ -6,7 +6,7 @@ import {Jumbotron, ButtonGroup,
 import {Loading} from './LoadingComponent'
 import EditQuiz from './Modals/EditQuiz'
 import {Link} from 'react-router-dom'
-function RenderForm ({items,id}) {
+function RenderForm ({items,id,Qname, postUpdateQuiz}) {
     if(items.length==0){
         return(
             <>
@@ -16,7 +16,7 @@ function RenderForm ({items,id}) {
         return(
             <Jumbotron>
                 <Form> 
-                <EditQuiz id={id} items={items} />
+                <EditQuiz id={id} items={items} Qname={Qname} postUpdateQuiz={postUpdateQuiz}/>
                     {
                         items.map((item) => {
                             let index = items.indexOf(item) + 1;
@@ -27,7 +27,7 @@ function RenderForm ({items,id}) {
                                     <Row className="form-group">
                                         <Label htmlFor={index} md={12}><b>{index}-</b> {item.text}</Label>
                                         <Col md={12}>
-                                            <Input type="textarea" style={{height:100}} id={index} />
+                                            <Input type="textarea" style={{height:100}}  id={index} />
                                         </Col>
                                     </Row>
                                     <hr/>
@@ -104,7 +104,7 @@ function RenderQuiz ({quiz, isLoading, errMess, postUpdateQuiz}) {
                 <div style={{display:"block"}}>Updated at <b>{quiz.updated_at}</b></div>
                 <hr/>
                 <br/>
-                <RenderForm items={quiz.items} Qname={quiz.name} id={quiz.id}/>
+                <RenderForm items={quiz.items} Qname={quiz.name} id={quiz.id} postUpdateQuiz={postUpdateQuiz}/>
             </>
         )
     }

@@ -88,6 +88,7 @@ export const fetchLOGOUT = () => (dispatch) => {
 };
 /* --------------------------------Fetch Profile----------------------------  */
 export const fetchProfile = () => (dispatch) => {
+  dispatch(profileLoading())
   console.log("fetching profile")
   var myHeaders = new Headers();
   myHeaders.append("Accept", "application/json");
@@ -101,9 +102,21 @@ export const fetchProfile = () => (dispatch) => {
 
   fetch(baseURL.profile, requestOptions)
     .then(response => response.json())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
+    .then(response => dispatch(getProfile(response)))
+    .then(response => console.log(response.payload))
+    .catch(error => dispatch(profileFailed(error.message)));
 }
+export const getProfile = (response) =>({
+  type: ActionTypes.GET_PROFILE,
+  payload:response
+})
+export const profileFailed = (errmess) =>({
+  type: ActionTypes.PROFILE_FAILED,
+  payload:errmess
+})
+export const profileLoading = () =>({
+  type: ActionTypes.PROFILE_LOADING
+})
 /*--------------------------------Fetch Participants-------------------------- */
 export const fetchParticipants = () => (dispatch) => {
   console.log("fetching participants")
@@ -411,7 +424,7 @@ export const postUpdateQuiz= (id, Qname, items) => (dispatch) => {
   myHeaders.append("Accept", "application/json");
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
-
+  console.log("----------------------------",items)
   var raw = JSON.stringify(
     {
       "id":id,
@@ -427,6 +440,186 @@ export const postUpdateQuiz= (id, Qname, items) => (dispatch) => {
   };
 
   return fetch(baseURL.updateQuiz, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+
+/*------------------------------------FETCH ALL USERS----------------------------------*/
+export const fetchUsers = () => (dispatch) => {
+  dispatch(usersLoading())
+  console.log("fetching users")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch(baseURL.allUsers, requestOptions)
+    .then(response => response.json())
+    .then(response => dispatch(getUsers(response)))
+    .then(response => console.log(response.payload))
+    .catch(error => dispatch(usersFailed(error.message)));
+}
+export const getUsers = (response) =>({
+  type: ActionTypes.GET_USERS,
+  payload:response
+})
+export const usersFailed = (errmess) =>({
+  type: ActionTypes.USERS_FAILED,
+  payload:errmess
+})
+export const usersLoading = () =>({
+  type: ActionTypes
+})
+
+/*--------------------------------POST USER -----------------------------------*/
+export const postUser= (username, password) => (dispatch) => {
+  console.log("POSTING A NEW USER")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+  var raw = JSON.stringify(
+    {
+      "username":username,
+      "password":password,
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.createUser, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*--------------------------------POST UPDATE USER -----------------------------------*/
+export const postUpdateUser= (username, id) => (dispatch) => {
+  console.log("UPDATING USER")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+  var raw = JSON.stringify(
+    {
+      "username":username,
+      "id":id,
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.updateUser, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*--------------------------------POST UPDATE PASSWORD -----------------------------------*/
+export const postUpdatePassword= (password, id) => (dispatch) => {
+  console.log("UPDATING PASSWORD")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+  var raw = JSON.stringify(
+    {
+      "password":password,
+      "id":id,
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.changePassword, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*--------------------------------POST DELETE USER-----------------------------------*/
+export const postDeleteUser= (id) => (dispatch) => {
+  console.log("UPDATING PASSWORD")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+  var raw = JSON.stringify(
+    {
+      "id":id,
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.deleteUser, requestOptions)
     .then(response => {
       if (response.ok) {
         return response;

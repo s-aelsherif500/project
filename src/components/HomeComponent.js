@@ -1,23 +1,47 @@
 import React , {Component} from 'react'
 import Header from './HeaderComponent'
-import {Jumbotron} from 'reactstrap'
+import {Jumbotron, Card,CardImg,CardBody} from 'reactstrap'
 import {Link} from 'react-router-dom'
-
-function FinalRender({Auth, fetchLOGOUT}) {
+import { Loading } from './LoadingComponent';
+function FinalRender({Auth, fetchLOGOUT,user,isLoading,errMess}) {
     console.log(typeof(Auth))
+
     if (Auth!="null"){
-        return(
-            <>  
-                <Header fetchLOGOUT = {fetchLOGOUT} />
-                <div className="container-paper">
-                    <h1>Home</h1>
-                    <hr/>
-                    <Jumbotron>
-                        <h2>This page for Home Page </h2>
-                    </Jumbotron>
-                </div>
-            </>
-        )
+        if (isLoading) {
+            return(
+                <>
+                    <Loading />
+                </> 
+            )
+        }else if (errMess) {
+            return(
+                <>
+                    <h2 className="text-danger">{errMess}</h2>
+                </>
+            )
+        }else {
+            return(
+                <>  
+                    <Header fetchLOGOUT = {fetchLOGOUT} />
+                    <div className="container-paper">
+                        <h1>Home</h1>
+                        <hr/>
+                        <Jumbotron>
+                            <div className="d-flex justify-content-left flex-wrap">
+                                <Card id = {user.id} style={{margin:10 , width:"20%", textAlign:"center"}}>
+                                    <CardImg top style={{width:"100%"}} src="/assets/img_avatar.png" alt="admin avatar"/>
+                                    <CardBody>
+                                    <div>{user.username}</div>
+                                        <Link to={`/users/${user.id}`}>Details</Link>
+                                    </CardBody>
+                                </Card>
+                            </div>
+                            <div><Link to="/users">Manage Users</Link></div>
+                        </Jumbotron>
+                    </div>
+                </>
+            )
+        }
     } else {
         return(
             <div className="container-paper">
@@ -41,7 +65,10 @@ class HomePage extends Component {
     render(){
         return(
             <> 
-                <FinalRender Auth={this.state.Auth} fetchLOGOUT = {this.props.fetchLOGOUT} />
+                <FinalRender Auth={this.state.Auth} fetchLOGOUT = {this.props.fetchLOGOUT}
+                user={this.props.user}
+                isLoading={this.props.isLoading}
+                errMess={this.props.errMess} />
             </>
         )
     }

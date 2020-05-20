@@ -309,7 +309,7 @@ class QForm extends Component {
                                 <Col md={12}>
                                     <Control.select model=".qtype" name="qtype" onChange={(e) => this.handleChange(e)}
                                         className="form-control">
-                                        <option value="input">Input</option>
+                                        <option value="input">Text</option>
                                         <option value="agree">Agree Question</option>
                                         <option value="select">Multiple Choice</option>
                                     </Control.select>
@@ -364,12 +364,6 @@ function RenderQuizes ({Quizes}) {
                                 <h5><b>Created at: </b>{quiz.created_at}.</h5>
                                 <h5><b>Updated at: </b>{quiz.updated_at}.</h5>
                             </CardText>
-                            <ButtonGroup>
-                                <Button type="button" className="btn-danger">
-                                <i className="fa fa-trash" aria-hidden="true"></i>Delete</Button>
-                                <Button type="button" className="btn-warning">
-                                <i className="fa fa-paper-plane" aria-hidden="true"></i>Send</Button>
-                            </ButtonGroup>
                             <br/>
                             <hr/>
                             <Link to={`/quizes/${quiz.id}`}>Show Quiz</Link>

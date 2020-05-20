@@ -17,3 +17,9 @@ export const allQuiz = "http://127.0.0.1:3333/api/v1/quizzes/";
 export const createQuiz = "http://127.0.0.1:3333/api/v1/quizzes/store";
 export const updateQuiz = "http://127.0.0.1:3333/api/v1/quizzes/update";
 export const deleteQuiz = "http://127.0.0.1:3333/api/v1/quizzes/delete";
+
+export const allUsers ="http://127.0.0.1:3333/api/v1/users/";
+export const createUser = "http://127.0.0.1:3333/api/v1/users/store";
+export const updateUser ="http://127.0.0.1:3333/api/v1/users/update";
+export const changePassword ="http://127.0.0.1:3333/api/v1/users/password";
+export const deleteUser = "http://127.0.0.1:3333/api/v1/users/delete";

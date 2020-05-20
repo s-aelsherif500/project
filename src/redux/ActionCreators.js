@@ -300,7 +300,7 @@ export const postGroup = (name, participants) => (dispatch) => {
     .then(response => response.json())
     .catch(error => console.log(error.message));
 };
-/*--------------------------------POST a GROUP -----------------------------------*/
+/*--------------------------------POST Update GROUP -----------------------------------*/
 export const postUpdateGroup = (name, id, participants) => (dispatch) => {
   console.log("UPDATING A NEW GROUP")
   var myHeaders = new Headers();
@@ -323,6 +323,110 @@ export const postUpdateGroup = (name, id, participants) => (dispatch) => {
   };
 
   return fetch(baseURL.updateGroup, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*--------------------------------Fetch Quizes--------------------------------*/
+export const fetchQuizes = () => (dispatch) => {
+  console.log("fetching quizes")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch(baseURL.allQuiz, requestOptions)
+    .then(response => response.json())
+    .then(response => dispatch(getQuizes(response)))
+    .then(response => console.log(response.payload))
+    .catch(error => dispatch(quizesFailed(error.message)));
+}
+export const getQuizes = (response) =>({
+  type: ActionTypes.GET_QUIZES,
+  payload:response
+})
+export const quizesFailed = (errmess) =>({
+  type: ActionTypes.QUIZES_FAILED,
+  payload:errmess
+})
+/*--------------------------------POST a Quiz -----------------------------------*/
+export const postQuiz = (Qname, items) => (dispatch) => {
+  console.log("POSTING A QUIZ")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+  var raw = JSON.stringify(
+    {
+      "name":Qname,
+      "items":items
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.createQuiz, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+
+/*--------------------------------POST Update QUIZ -----------------------------------*/
+export const postUpdateQuiz= (id, Qname, items) => (dispatch) => {
+  console.log("UPDATING A NEW QUIZ")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+
+  var raw = JSON.stringify(
+    {
+      "id":id,
+      "name":Qname,
+      "items":items
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.updateQuiz, requestOptions)
     .then(response => {
       if (response.ok) {
         return response;

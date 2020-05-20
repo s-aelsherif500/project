@@ -1,10 +1,11 @@
 import {createStore, combineReducers, applyMiddleware } from 'redux';
 import { createForms } from 'react-redux-form';
 import { Auth } from './Auth';
-import {List} from './List';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
+import {List} from './List';
 import {Groups} from './Groups';
+import {Quizes} from './Quizes';
 
 export const ConfigureStore = () => {
     console.log(Auth)
@@ -12,6 +13,7 @@ export const ConfigureStore = () => {
         combineReducers({
             list: List,
             groups:Groups,
+            quizes:Quizes,
             ...createForms({
             })
         }),

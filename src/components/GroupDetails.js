@@ -43,8 +43,10 @@ function RenderParticipants ({group, isLoading, errMess, all_participants,postUp
         return(
             <>
                 <h3>{group.name} </h3>
-                <h5>Created at {group.created_at}</h5>
-                <h5>Updated at {group.updated_at}</h5>
+                <div style={{display:"block"}}>Created at <b>{group.created_at}</b></div>
+                <div style={{display:"block"}}>Updated at <b>{group.updated_at}</b></div>
+                <hr/>
+                <br/>
                 <EditGroup buttonLabel={''} all_participants={all_participants} 
                     postUpdateGroup={postUpdateGroup}
                     name={group.name}
@@ -120,6 +122,7 @@ class GroupDetails extends Component {
                     group={this.props.group}
                     isLoading={this.props.isLoading}
                     errMess={this.props.errMess}
+                    fetchLOGOUT={this.props.fetchLOGOUT}
                     postUpdateGroup={this.props.postUpdateGroup} />
                 />
             </>

@@ -6,24 +6,29 @@ import Questions from './QuestionComponent'
 import Group from './GroupComponent'
 import Charts from './ChartComponent'
 import GroupDetails from './GroupDetails'
+import QuizForm from './QuizForm';  
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { postLOGIN,
     fetchLOGOUT,
     fetchProfile,
     fetchParticipants,
-    fetchGroups, 
+    fetchGroups,
+    fetchQuizes, 
     postParticipant,
     postUpdatePart, 
     postDeletePart,
     postGroup,
-    postUpdateGroup } from '../redux/ActionCreators';
+    postUpdateGroup,
+    postQuiz,
+    postUpdateQuiz } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
       auth: state.auth,
       list:state.list,
-      groups:state.groups
+      groups:state.groups,
+      quizes:state.quizes
     }
   }
 const mapDispatchToProps = dispatch => ({
@@ -33,11 +38,13 @@ const mapDispatchToProps = dispatch => ({
     postDeletePart: (id) => dispatch(postDeletePart(id)),
     postGroup: (name, participants) => dispatch(postGroup(name, participants)),
     postUpdateGroup: (name, id, participants) => dispatch(postUpdateGroup(name, id, participants)),
-
+    postQuiz: (name,items) => dispatch(postQuiz(name,items)),
+    postUpdateQuiz: (id,name,items) => dispatch(postUpdateQuiz(id,name,items)),
     fetchProfile: () => { dispatch(fetchProfile())},
     fetchLOGOUT : () => {dispatch(fetchLOGOUT())},
     fetchParticipants: () =>{ dispatch(fetchParticipants())},
-    fetchGroups: () => {dispatch(fetchGroups())}
+    fetchGroups: () => {dispatch(fetchGroups())},
+    fetchQuizes: () => {dispatch(fetchQuizes())}
 });
 
 
@@ -45,11 +52,13 @@ class Main extends Component {
     constructor(props){
         super(props)
         this.state={
+            G:"g"
         }
     }
     componentDidMount(){
         this.props.fetchParticipants();
         this.props.fetchGroups();
+        this.props.fetchQuizes();
     }
 
     render(){
@@ -85,13 +94,31 @@ class Main extends Component {
                 </>
             )
         }
-        const QuestionPage = () => {
+        const QuizesPage = () => {
             return(
                 <>  
-                    <Questions fetchLOGOUT = {this.props.fetchLOGOUT} />
+                    <Questions 
+                        fetchLOGOUT = {this.props.fetchLOGOUT}
+                        postQuiz = {this.props.postQuiz}
+                        Quizes = {this.props.quizes}/>
                 </>
             )
         }
+        const QuizPage = ({match}) =>{
+            return(
+                <>
+                    <QuizForm  
+                    quiz={(this.props.quizes.quizes.length!=0 && localStorage.getItem("token")!="null")? 
+                        this.props.quizes.quizes.data.filter((quiz) => quiz.id === parseInt(match.params.quizId,10))[0] 
+                        : {}
+                    }
+                    isLoading={this.props.quizes.isLoading}
+                    errMess={this.props.quizes.errMess}
+                    fetchLOGOUT = {this.props.fetchLOGOUT}
+                    postUpdateQuiz={this.props.postUpdateQuiz} />
+                </>
+            )
+        } 
         const GroupPage = () => {
             return(
                 <>  
@@ -123,10 +150,11 @@ class Main extends Component {
                     <Switch>
                         <Route path="/login" component={LoginPage} />
                         <Route exact path="/home" component={Home} />
-                        <Route path="/list" component={LIST} />
-                        <Route exact path="/questions" component={QuestionPage} />
+                        <Route exact path="/list" component={LIST} />
+                        <Route exact path="/quizes" component={QuizesPage} />
                         <Route exact path="/groups" component={GroupPage} />
                         <Route exact path="/charts" component={ChartPage} />
+                        <Route path='/quizes/:quizId' component={QuizPage} />
                         <Route path='/groups/:groupId' component={G_Details} />
                         <Redirect to={iniHref} />
                     </Switch>

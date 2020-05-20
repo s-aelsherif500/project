@@ -14,6 +14,6 @@ export const updateGroup = "http://127.0.0.1:3333/api/v1/groups/update";
 export const deleteGroup = "http://127.0.0.1:3333/api/v1/groups/delete";
 
 export const allQuiz = "http://127.0.0.1:3333/api/v1/quizzes/";
-export const createQuiz = "http://127.0.0.1:3333/api/v1/quizzes/";
+export const createQuiz = "http://127.0.0.1:3333/api/v1/quizzes/store";
 export const updateQuiz = "http://127.0.0.1:3333/api/v1/quizzes/update";
 export const deleteQuiz = "http://127.0.0.1:3333/api/v1/quizzes/delete";

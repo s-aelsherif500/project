@@ -2,55 +2,82 @@ import React, { Component } from 'react';
 import Header from './HeaderComponent'
 import {
     Card, CardText, CardBody,
-    CardTitle, CardSubtitle, Jumbotron} from 'reactstrap';
+    CardTitle, CardSubtitle, Jumbotron, Button, ButtonGroup} from 'reactstrap';
 import {Link} from 'react-router-dom'
 import Info from './InfoModal';
 import AddGroup from './Modals/AddGroup'
 import { Loading } from './LoadingComponent';
 
-function RenderGroups ({Groups}) {
-    if (Groups.isLoading) {
-        return(
-            <>
-                <Loading />
-            </> 
+class RenderGroups extends Component {
+    constructor(props){
+        super(props)
+        this.state={
+        }
+    }
+    deleteGroup(e){
+        let id = e.target.name 
+        this.props.postDeleteGroup(id)
+        .then(
+            window.location.href='/groups'
         )
-    }else if (Groups.errMess) {
-        return(
-            <>
-                <h2 className="text-danger">{Groups.errMess}</h2>
-            </>
-        )
-    }else {
-        console.log(Groups)
-        const groups = Groups.groups.data.map((group) =>{
+    }
+        render(){
+            let Groups = this.props.Groups
+        if (Groups.isLoading) {
             return(
                 <>
-                    <Card id = {group.id} style={{margin:10, textAlign:"center"}}>
-                        <CardBody>
-                            <CardTitle style={{fontWeight:"bold",
-                                            fontSize:20}}>{group.name}</CardTitle>
-                                            <hr/>
-                            <CardText>
-                                <h5><b>Created at:</b>{group.created_at}.</h5>
-                                <h5><b>Updated at:</b>{group.updated_at}.</h5>
-                            </CardText>
-                            <Info buttonLabel={'Info'} info={group.created_at} id = {group.id}/>
-                            <Link to={`/groups/${group.id}`}>Go here</Link>
-                        </CardBody>
-                    </Card>
-                    <br/>
-                </>
+                    <Loading />
+                </> 
             )
-        })
-        return(
+        }else if (Groups.errMess) {
+            return(
                 <>
-                    {groups}
+                    <h2 className="text-danger">{Groups.errMess}</h2>
                 </>
             )
+        }else {
+            console.log(Groups)
+            const groups = Groups.groups.data.map((group) =>{
+                return(
+                    <>
+                        <Card id = {group.id} style={{margin:10, textAlign:"center"}}>
+                            <CardBody>
+                                <CardTitle style={{fontWeight:"bold",
+                                                fontSize:20}}>{group.name}</CardTitle>
+                                                <hr/>
+                                <CardText>
+                                    <h5><b>Created at:</b>{group.created_at}.</h5>
+                                    <h5><b>Updated at:</b>{group.updated_at}.</h5>
+                                </CardText>
+                                <ButtonGroup>
+                                    <Button type="button" md={12} color="danger" name={group.id}
+                                        onClick={(e) => this.deleteGroup(e)}>
+                                        <i className="fa fa-trash"></i>
+                                        Delete
+                                    </Button>
+                                    <Button type="button" md={12} color="primary" name={group.id}>
+                                        <Link to={`/groups/${group.id}`}
+                                            style={{color:"white",textDecoration:"none"}}>
+                                            <i className="fa fa-pencil"></i>
+                                                Edit
+                                        </Link>
+                                    </Button>    
+                                </ButtonGroup>
+                            </CardBody>
+                        </Card>
+                        <br/>
+                    </>
+                )
+            })
+            return(
+                    <>
+                        {groups}
+                    </>
+                )
+        }
     }
 }
-function FinalRender({Auth, fetchLOGOUT, Groups, all_participants, postGroup}) {
+function FinalRender({Auth, fetchLOGOUT, Groups, all_participants, postGroup, postDeleteGroup}) {
     console.log(typeof(Auth))
     if (Auth!="null"){
         return(
@@ -63,7 +90,7 @@ function FinalRender({Auth, fetchLOGOUT, Groups, all_participants, postGroup}) {
                     <AddGroup buttonLabel={'+ Add Group'} all_participants={all_participants} postGroup={postGroup} />
                     <br/><br/>
                     <div className="d-flex justify-content-center flex-wrap">   
-                        <RenderGroups Groups={Groups} />
+                        <RenderGroups Groups={Groups} postDeleteGroup={postDeleteGroup} />
                     </div>
                     </Jumbotron>
                 </div>
@@ -91,14 +118,15 @@ class Group extends Component {
         }
     }
     render(){
-        console.log(this.state.Groups)
+        console.log(this.props)
         return(
             <>
                 <FinalRender Auth={this.state.Auth} 
                     fetchLOGOUT={this.props.fetchLOGOUT}
                     Groups={this.state.Groups}
                     all_participants={this.props.list}
-                    postGroup={this.props.postGroup} />
+                    postGroup={this.props.postGroup} 
+                    postDeleteGroup={this.props.postDeleteGroup}/>
             </>
         )
     }

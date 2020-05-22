@@ -1,12 +1,10 @@
 import React , {Component} from 'react'
 import Header from './HeaderComponent'
-import {Jumbotron, Card,CardImg,CardBody, Button, Col,CardText, CardTitle} from 'reactstrap'
+import {Jumbotron, Card,CardImg,CardBody, Button, Col,CardText} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import { Loading } from './LoadingComponent';
-function FinalRender({Auth, fetchLOGOUT,user,isLoading,errMess}) {
+function FinalRender({token, fetchLOGOUT,user,isLoading,errMess}) {
     console.log(typeof(Auth))
-
-    if (Auth!="null"){
         if (isLoading) {
             return(
                 <>
@@ -43,42 +41,23 @@ function FinalRender({Auth, fetchLOGOUT,user,isLoading,errMess}) {
                                 
                                 
                             </div>
-                            <Col md={4}>
-                                <Card>
-                                    <CardTitle style={{textAlign:"center"}}>
-                                        <Link to="/users"><b> Manage Users </b></Link>
-                                    </CardTitle>
-                                </Card>
-                            </Col>
+                            <div><Link to="/users">Manage Users</Link></div>
                         </Jumbotron>
                     </div>
                 </>
             )
         }
-    } else {
-        return(
-            <div className="container-paper">
-                <h1>This page is Authorized</h1>
-                <hr/>
-                <br/>
-                <div className="">
-                    You can't see the page untill you <Link to="/login">sign in</Link>
-                </div>
-            </div>
-        )
-    }
 }
-class HomePage extends Component {
+class Survey extends Component {
     constructor(props){
         super(props)
         this.state={
-            Auth:localStorage.getItem("token")
         }
     }
     render(){
         return(
             <> 
-                <FinalRender Auth={this.state.Auth} fetchLOGOUT = {this.props.fetchLOGOUT}
+                <FinalRender 
                 user={this.props.user}
                 isLoading={this.props.isLoading}
                 errMess={this.props.errMess} />
@@ -86,4 +65,4 @@ class HomePage extends Component {
         )
     }
 }
-export default HomePage
+export default Survey

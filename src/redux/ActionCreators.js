@@ -220,9 +220,8 @@ export const postDeletePart = (id) => (dispatch) => {
   myHeaders.append("Accept", "application/json");
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
-
+  console.log(id)
   var raw = JSON.stringify({"id":id});
-
   var requestOptions = {
     method: 'POST',
     headers: myHeaders,
@@ -336,6 +335,43 @@ export const postUpdateGroup = (name, id, participants) => (dispatch) => {
   };
 
   return fetch(baseURL.updateGroup, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*--------------------------------Post Delete Group---------------------------*/
+export const postDeleteGroup = (id) => (dispatch) => {
+  console.log("DELETING GROUP")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+
+  var raw = JSON.stringify(
+    {
+      "id":id,
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.deleteGroup, requestOptions)
     .then(response => {
       if (response.ok) {
         return response;

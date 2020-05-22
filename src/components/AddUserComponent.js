@@ -1,6 +1,6 @@
 import React , {Component} from 'react'
 import Header from './HeaderComponent'
-import {Input,Jumbotron,Button} from 'reactstrap'
+import {Input,Jumbotron,Button, Breadcrumb, BreadcrumbItem} from 'reactstrap'
 import {Link} from 'react-router-dom'
 
 const formValid = formErrors => {
@@ -97,7 +97,7 @@ class User extends Component {
                             onChange={this.handleChange}
                                 />
                     <div className="text-danger">{errors.password}</div>
-                        <Button type="button" className="btn-success" onClick={(e)=>this.handleSubmit(e)}><i className="fa fa-plus">login</i></Button>
+                        <Button type="button" className="btn-success" onClick={(e)=>this.handleSubmit(e)}><i className="fa fa-plus"> Add user</i></Button>
                     <hr/>
                 </form>
             </div>
@@ -112,7 +112,12 @@ function FinalRender({Auth, fetchLOGOUT,postUser}) {
             <>  
                 <Header fetchLOGOUT = {fetchLOGOUT} />
                 <div className="container-paper">
-                    <h1>Users</h1>
+                    <h1>Home</h1>
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+                        <BreadcrumbItem><Link to="/users">Users</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>new user</BreadcrumbItem>
+                    </Breadcrumb>
                     <hr/>
                     <Jumbotron>
                         <h3>Add a new user</h3>

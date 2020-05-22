@@ -8,10 +8,12 @@ import Charts from './ChartComponent'
 import GroupDetails from './GroupDetails'
 import QuizForm from './QuizForm';  
 import UsersPage from './UsersComponent';
-import AddUser from './AddUserComponent'
+import AddUser from './AddUserComponent';
 import UpdateUser from './UserDetailsComponet'
+import Survey from './SurveyComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import {CircleArrow as ScrollUpButton} from "react-scroll-up-button"; //Add this line Here
 import { postLOGIN,
     fetchLOGOUT,
     fetchProfile,
@@ -24,6 +26,7 @@ import { postLOGIN,
     postDeletePart,
     postGroup,
     postUpdateGroup,
+    postDeleteGroup,
     postQuiz,
     postUpdateQuiz,
     postUser,
@@ -38,7 +41,7 @@ const mapStateToProps = state => {
       profile:state.profile,
       groups:state.groups,
       quizes:state.quizes,
-      users:state.users
+      users:state.users,
     }
   }
 const mapDispatchToProps = dispatch => ({
@@ -48,6 +51,7 @@ const mapDispatchToProps = dispatch => ({
     postDeletePart: (id) => dispatch(postDeletePart(id)),
     postGroup: (name, participants) => dispatch(postGroup(name, participants)),
     postUpdateGroup: (name, id, participants) => dispatch(postUpdateGroup(name, id, participants)),
+    postDeleteGroup: (id) => dispatch(postDeleteGroup(id)),
     postQuiz: (name,items) => dispatch(postQuiz(name,items)),
     postUpdateQuiz: (id,name,items) => dispatch(postUpdateQuiz(id,name,items)),
     postUser: (username,password) => dispatch(postUser(username,password)),
@@ -122,7 +126,9 @@ class Main extends Component {
                     <UsersPage fetchLOGOUT = {this.props.fetchLOGOUT}
                         users={this.props.users.users.data}
                         isLoading={this.props.users.isLoading}
-                        errMess={this.props.users.errMess} />
+                        profile={this.props.profile.profile}
+                        errMess={this.props.users.errMess}
+                        postDeleteUser={this.props.postDeleteUser} />
                 </>
             )
         }
@@ -152,6 +158,7 @@ class Main extends Component {
                             this.props.users.users.data.filter((user) => user.id === parseInt(match.params.userId,10))[0] 
                             : {}
                     }
+                    profile={this.props.profile.profile}
                     fetchLOGOUT={this.props.fetchLOGOUT}
                     postUpdateUser={this.props.postUpdateUser}
                     postUpdatePassword={this.props.postUpdatePassword} 
@@ -179,7 +186,8 @@ class Main extends Component {
                     <Group Groups={this.props.groups} 
                         postGroup = {this.props.postGroup}
                         fetchLOGOUT = {this.props.fetchLOGOUT}
-                        list={this.props.list} />
+                        list={this.props.list}
+                        postDeleteGroup={this.props.postDeleteGroup} />
                 </>
             )
         }
@@ -199,23 +207,33 @@ class Main extends Component {
                     fetchLOGOUT = {this.props.fetchLOGOUT} />
             )
         }
+        const SurveyPage = ({match}) =>{
+            return(
+                <Survey token = {match.params.token}
+                postStartSurvey={this.props.postStartSurvey} />
+            )
+        }
         
         return(
-                    <Switch>
-                        <Route path="/login" component={LoginPage} />
-                        <Route exact path="/home" component={Home} />
-                        <Route exact path="/users" component={Users} />
-                        <Route exact path="/users/add" component={AddUserPage} />
-                        <Route exact path="/users/:userId" component={UpdateUserPage} />
-                        <Route exact path="/list" component={LIST} />
-                        <Route exact path="/quizes" component={QuizesPage} />
-                        <Route exact path="/groups" component={GroupPage} />
-                        <Route exact path="/charts" component={ChartPage} />
-                        <Route exact path='/quizes/:quizId' component={QuizPage} />
-                        <Route exact path='/groups/:groupId' component={G_Details} />
-                        <Redirect to={iniHref} />
-                    </Switch>
-        )
+            <>
+                <ScrollUpButton />
+                <Switch>
+                    <Route path="/login" component={LoginPage} />
+                    <Route exact path="/home" component={Home} />
+                    <Route exact path="/users" component={Users} />
+                    <Route exact path="/users/add" component={AddUserPage} />
+                    <Route exact path="/users/:userId" component={UpdateUserPage} />
+                    <Route exact path="/list" component={LIST} />
+                    <Route exact path="/quizes" component={QuizesPage} />
+                    <Route exact path="/groups" component={GroupPage} />
+                    <Route exact path="/charts" component={ChartPage} />
+                    <Route exact path='/quizes/:quizId' component={QuizPage} />
+                    <Route exact path='/groups/:groupId' component={G_Details} />
+                    <Route exact path='/survey/:token' component={SurveyPage} />
+                    <Redirect to={iniHref} />
+                </Switch>
+            </>
+)
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main)) 

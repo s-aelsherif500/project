@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Header from './HeaderComponent'
-import {Jumbotron, Button, ButtonGroup} from 'reactstrap';
+import {Jumbotron, Button, ButtonGroup
+    , Breadcrumb,BreadcrumbItem } from 'reactstrap';
 import {Loading} from './LoadingComponent'
 import EditGroup from './Modals/EditGroup'
 import {Link} from 'react-router-dom'
@@ -90,7 +91,11 @@ function FinalRender ({Auth,group, isLoading, errMess, all_participants,fetchLOG
             <>
                 <Header fetchLOGOUT = {fetchLOGOUT}/>
                 <div className="container-paper">
-                <h1>Groups</h1>
+                    <h1>Groups</h1>
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to="/groups">Groups</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>{group.name}</BreadcrumbItem>
+                    </Breadcrumb>
                     <hr/>
                     <Jumbotron>
                         <RenderParticipants

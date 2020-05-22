@@ -1,6 +1,8 @@
 import React , {Component} from 'react'
 import Header from './HeaderComponent'
-import {Input,Jumbotron,Button,ButtonGroup, Card, CardImg, CardBody, Label, FormGroup} from 'reactstrap'
+import {Input,Jumbotron,Button,ButtonGroup
+    , Card, CardImg, CardBody,Col , Breadcrumb,BreadcrumbItem 
+    , Label, FormGroup} from 'reactstrap'
 import {Link} from 'react-router-dom'
 
 const formValid = formErrors => {
@@ -18,7 +20,7 @@ class UserDetail extends Component {
             password:this.props.password,
             id:this.props.id,
             checked:false,
-            disabled:false,
+            disabled:true,
             formErrors:{
                 username:'',
                 password:'',
@@ -98,56 +100,63 @@ class UserDetail extends Component {
         const errors = this.state.checked;
         console.log(this.state)
         return(
-            <div className="contanier justify-content-center" style={{width:"60%"}} >
+            <div className="contanier" >
                 <form onSubmit={(e) => this.handleSubmit(e)} style={{margin:"auto"}}>
                     <div style={{textAlign:"center"}} className="text-danger" id="error"></div>
-                    <Card style={{margin:10 , width:"90%", textAlign:"center"}}>
-                                <CardImg top style={{width:"100%"}} src="/assets/img_avatar.png" alt="admin avatar"/>
-                                <CardBody>
-                                    <div>Update User Information</div>
-                                    <hr/>
-                                    <FormGroup check>
-                                        <Label check>
-                                        <Input type="checkbox" name="checked" onChange={this.handleChange} value={this.state.checked}/>{' '}
-                                            Also Change the password
-                                        </Label>
-                                    </FormGroup>
-                                    <Input type="text" 
+                    <Col md={12}>
+                        <Card style={{ textAlign:"center"}}>
+                            <CardImg top style={{width:"100%"}} src="/assets/img_avatar.png" alt="admin avatar"/>
+                            <CardBody>
+                                <div>Update User Information</div>
+                                <hr/>
+                                <p>
+                                    <b>Created at: </b> <span>{this.props.user.created_at}</span><br/>
+                                    <b>Updated at: </b> <span>{this.props.user.updated_at}</span>
+                                </p>
+                                <FormGroup check>
+                                    <Label check>
+                                    <Input type="checkbox" name="checked" onChange={this.handleChange} value={this.state.checked}/>{' '}
+                                        Also change the password
+                                    </Label>
+                                </FormGroup>
+                                <Input type="text" 
+                                    className='input'  
+                                    name="username" 
+                                    id="Username" 
+                                    value={this.state.username}
+                                    placeholder="Username"
+                                    valid={this.state.formErrors.username===''}
+                                    invalid={this.state.formErrors.username!==''}
+                                    onBlur = {this.handleBlur}
+                                    onChange={this.handleChange}
+                                />
+                                <div className="text-danger">{errors.username}</div>
+                                <Input type="password" 
                                         className='input'  
-                                        name="username" 
-                                        id="Username" 
-                                        value={this.state.username}
-                                        placeholder="Username"
-                                        valid={this.state.formErrors.username===''}
-                                        invalid={this.state.formErrors.username!==''}
+                                        name="password" 
+                                        id="Password" 
+                                        value={this.state.password}
+                                        placeholder="Enter Your Password"
+                                        valid={this.state.formErrors.password===''}
+                                        invalid={this.state.formErrors.password!==''}
                                         onBlur = {this.handleBlur}
                                         onChange={this.handleChange}
-                                    />
-                                    <div className="text-danger">{errors.username}</div>
-                                    <Input type="password" 
-                                            className='input'  
-                                            name="password" 
-                                            id="Password" 
-                                            value={this.state.password}
-                                            placeholder="Enter Your Password"
-                                            valid={this.state.formErrors.password===''}
-                                            invalid={this.state.formErrors.password!==''}
-                                            onBlur = {this.handleBlur}
-                                            onChange={this.handleChange}
-                                            disabled = {(this.state.disabled)? "disabled" : ""}
-                                                />
-                                    <div className="text-danger">{errors.password}</div>
-                                </CardBody>
-                            </Card>
-                    
+                                        disabled = {(this.state.disabled)? "disabled" : ""}
+                                            />
+                                <div className="text-danger">{errors.password}</div>
+                            </CardBody>
+                        </Card>
+                        
                         <ButtonGroup>
-                        <Button type="button" color="primary" onClick={(e)=>this.handleSubmit(e)}> 
-                        <i className="fa fa-pencil"></i> Edit
-                        </Button>
-                        <Button type="button" color="danger" onClick={(e)=>this.handleDelete(e)}> 
-                        <i className="fa fa-trash"></i> Delete
-                        </Button>
+                            <Button type="button" color="primary" onClick={(e)=>this.handleSubmit(e)}> 
+                            <i className="fa fa-pencil"></i> Edit
+                            </Button>
+                            <Button type="button" color="danger" disabled={(this.props.profile.username!=this.props.user.username)? false:true} onClick={(e)=>this.handleDelete(e)}> 
+                            <i className="fa fa-trash"></i> Delete
+                            </Button>
                         </ButtonGroup>
+                    </Col>
+                    
                     
                     <hr/>
                 </form>
@@ -156,21 +165,27 @@ class UserDetail extends Component {
     }
 }
 
-function FinalRender({Auth, fetchLOGOUT,id,username, password, postUpdateUser,postUpdatePassword,postDeleteUser}) {
+function FinalRender({Auth, fetchLOGOUT,user,profile,id,username, password, postUpdateUser,postUpdatePassword,postDeleteUser}) {
     console.log(typeof(Auth))
     if (Auth!="null"){
         return(
             <>  
                 <Header fetchLOGOUT = {fetchLOGOUT} />
                 <div className="container-paper">
-                    <h1>Users</h1>
-                    <hr/>
+                    <h1>Home</h1>
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+                        <BreadcrumbItem><Link to="/users">Users</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>{username}</BreadcrumbItem>
+                    </Breadcrumb>
                     <Jumbotron>
-                        <h3>User Information</h3>
+                        <h4>Hello, {username}</h4>
                         <UserDetail postUpdateUser={postUpdateUser} 
                             postUpdatePassword={postUpdatePassword}
                             username={username}
                             password={password}
+                            profile={profile}
+                            user={user}
                             postDeleteUser={postDeleteUser}
                             id={id} />
                     </Jumbotron>
@@ -207,6 +222,8 @@ class UpdateUser extends Component {
                     postUpdatePassword={this.props.postUpdatePassword}
                     username={this.props.user.username}
                     password={this.props.user.password}
+                    profile={this.props.profile}
+                    user={this.props.user}
                     id={this.props.user.id}
                     postDeleteUser={this.props.postDeleteUser} />
             </>

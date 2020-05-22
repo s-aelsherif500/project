@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import Header from './HeaderComponent'
-import {Jumbotron, ButtonGroup,
-    Button, Modal, ModalHeader, ModalBody, Row, Col, Label, Input, Form,
-    Card, CardBody, CardTitle, CardText} from 'reactstrap';
+import {Jumbotron, Breadcrumb,BreadcrumbItem,
+     Row, Col, Label, Input, Form} from 'reactstrap';
 import {Loading} from './LoadingComponent'
 import EditQuiz from './Modals/EditQuiz'
 import {Link} from 'react-router-dom'
@@ -127,6 +126,10 @@ function FinalRender ({Auth,quiz, isLoading, errMess,fetchLOGOUT,postUpdateQuiz}
                 <Header fetchLOGOUT = {fetchLOGOUT}/>
                 <div className="container-paper">
                 <h1>Quizes</h1>
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to="/quizes">Quizes</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>{quiz.name}</BreadcrumbItem>
+                    </Breadcrumb>
                     <hr/>
                     <Jumbotron>
                         <RenderQuiz

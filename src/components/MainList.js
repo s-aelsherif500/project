@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, ButtonGroup, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label} from 'reactstrap';
+import { Button, ButtonGroup} from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import {Link} from 'react-router-dom'
 import Header from './HeaderComponent';
@@ -9,83 +9,107 @@ import AddModal from './Modals/AddModal'
 //import DeleteModal from './Modals/DeleteModal'
 
   
-function RenderList ({props,postParticipant,postUpdatePart}) {
-    console.log(props)
+class RenderList extends Component {
+    constructor(props){
+        super(props)
+    }
 
-    if (props.isLoading) {
-        return(
-            <div className="container">
-                <div className="row">            
-                    <Loading />
-                </div>
-            </div>
-        );
-    }
-    else if (props.errMess) {
-        return(
-            <div className="container">
-                <div className="row"> 
-                    <div className="col-12">
-                        <h4 className="text-danger">{props.errMess}</h4>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-    else {
-        let count = 0;
-        console.log(props)
-        const Table = props.list.data.map((person)=>{
-            console.log(person)
-            return(
-                <tr key={person.id}>
-                    <th scope="row">{count+=1}</th>
-                    <td>{person.first_name}</td>
-                    <td>{person.last_name}</td>
-                    <td>{person.email}</td>      
-                    <td>
-                        <ButtonGroup>
-                            <Button id={person.id} color="warning" className="btn">
-                                <i className="fa fa-paper-plane" aria-hidden="true"></i>
-                                Send
-                            </Button>
-                            <EditModal buttonLabel = {'edit model'}
-                                id={person.id}
-                                first_name={person.first_name}
-                                last_name={person.last_name}
-                                email={person.email}
-                                postUpdatePart = {postUpdatePart}
-                              />
-                        </ButtonGroup>
-                    </td>
-                </tr>
-            )
-        })
-        return(
-            <React.Fragment>
-                <AddModal nextID ={props.list.data.length} 
-                    postParticipant={postParticipant} />
-                <table className="table">
-                    <thead>
-                        <tr>
-                                <th scope="col"><b>#</b></th>
-                                <th scope="col"><b>First Name</b></th>
-                                <th scope="col"><b>Last Name</b></th>
-                                <th scope="col"><b>Email</b></th>
-                                <th scope="col"><b>Options</b></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            Table
-                        }
-                    </tbody>
-                </table>
-            </React.Fragment>
+    deletePart(e){
+        console.log(e.target.name)
+        let id = e.target.name;
+        this.props.postDeletePart(id)
+        .then(
+            window.location.href="/list"
         )
     }
+    render(){
+        let props=this.props.props,
+        postParticipant = this.props.postParticipant,
+        postUpdatePart = this.props.postUpdatePart
+        console.log(props)
+
+        if (props.isLoading) {
+            return(
+                <div className="container">
+                    <div className="row">            
+                        <Loading />
+                    </div>
+                </div>
+            );
+        }
+        else if (props.errMess) {
+            return(
+                <div className="container">
+                    <div className="row"> 
+                        <div className="col-12">
+                            <h4 className="text-danger">{props.errMess}</h4>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        else {
+            let count = 0;
+            console.log(props)
+            const Table = (props.list.data.length==0)? "Empty": props.list.data.map((person)=>{
+                console.log(person.__meta__.surveys_count)
+                let id = person.id;
+                console.log(person)
+                return(
+                    <tr key={person.id}>
+                        <th scope="row">{count+=1}</th>
+                        <td>{person.first_name}</td>
+                        <td>{person.last_name}</td>
+                        <td>{person.email}</td>      
+                        <td>
+                            <ButtonGroup>
+                                <Button id={person.id} color="warning" type="button">
+                                    <i className="fa fa-paper-plane" aria-hidden="true"></i>
+                                    Send
+                                </Button>
+                                <Button id={person.id} color="danger" name={id} type="button" onClick={(e) => this.deletePart(e)}
+                                        disabled={(person.__meta__.surveys_count != 0)? true : false} >
+                                    <i className="fa fa-trash"></i>
+                                    Delete
+                                </Button>
+                                <EditModal buttonLabel = {'edit model'}
+                                    id={person.id}
+                                    first_name={person.first_name}
+                                    last_name={person.last_name}
+                                    email={person.email}
+                                    postUpdatePart = {postUpdatePart}
+                                />
+                            </ButtonGroup>
+                        </td>
+                    </tr>
+                )
+            })
+            return(
+                <React.Fragment>
+                    <AddModal nextID ={props.list.data.length} 
+                        postParticipant={postParticipant} />
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                    <th scope="col"><b>#</b></th>
+                                    <th scope="col"><b>First Name</b></th>
+                                    <th scope="col"><b>Last Name</b></th>
+                                    <th scope="col"><b>Email</b></th>
+                                    <th scope="col"><b>Options</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                Table
+                            }
+                        </tbody>
+                    </table>
+                </React.Fragment>
+            )
+        }
+    }
 }
-function FinalRender({Auth, fetchLOGOUT, props, postParticipant,postUpdatePart}) {
+function FinalRender({Auth, fetchLOGOUT, props, postParticipant,postUpdatePart, postDeletePart}) {
     console.log(typeof(Auth),"",props)
     if (Auth!="null"){
         return(
@@ -98,7 +122,8 @@ function FinalRender({Auth, fetchLOGOUT, props, postParticipant,postUpdatePart})
                     <div className="container-list table-responsive">
                         <RenderList props={props} 
                             postParticipant = {postParticipant}
-                            postUpdatePart = {postUpdatePart} />
+                            postUpdatePart = {postUpdatePart}
+                            postDeletePart={postDeletePart} />
                     </div>
                 </div>
             </>
@@ -131,6 +156,7 @@ class MainList extends Component {
                 props={this.props.list}
                 postUpdatePart={this.props.postUpdatePart}
                 postParticipant={this.props.postParticipant}
+                postDeletePart={this.props.postDeletePart}
                 fetchLOGOUT={this.props.fetchLOGOUT} />
         )
     }

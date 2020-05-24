@@ -21,3 +21,7 @@ export const QUIZES_FAILED = 'QUIZES_FAILED';
 export const GET_USERS = 'GET_USERS';
 export const USERS_LOADING = 'USERS_LOADING';
 export const USERS_FAILED = 'USERS_FAILED';
+
+export const GET_RESULTS = "GET_RESULTS";
+export const RESULTS_LOADING = "RESULTS_LOADING";
+export const RESULTS_FAILED = "RESULTS_FAILED";

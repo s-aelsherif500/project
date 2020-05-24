@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat|Quicksand');
 @import "./css/EveryPage.css";
+@import "./css/Form.css";
 @import "./css/List.css";
 @import "./css/PageAnimation.css";
 @import "./css/LoadingSpinner.css";

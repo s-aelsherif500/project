@@ -14,13 +14,16 @@ import Survey from './SurveyComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button"; //Add this line Here
-import { postLOGIN,
+import {
     fetchLOGOUT,
     fetchProfile,
     fetchParticipants,
     fetchGroups,
     fetchQuizes,
     fetchUsers, 
+    fetchResults,
+
+    postLOGIN,
     postParticipant,
     postUpdatePart, 
     postDeletePart,
@@ -29,10 +32,25 @@ import { postLOGIN,
     postDeleteGroup,
     postQuiz,
     postUpdateQuiz,
+    postDelete,
     postUser,
     postUpdateUser,
     postUpdatePassword,
-    postDeleteUser } from '../redux/ActionCreators';
+    postDeleteUser,
+    postSendToPart,
+    postSendToGroup,
+    postQandA,
+    
+    postStart,
+    postFinish,
+    postGender,
+    postAge,
+    postEduLevel,
+    postCurSchool,
+    postHighEdu,
+    postTextQ,
+    postOptionQ,
+ } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
@@ -42,6 +60,7 @@ const mapStateToProps = state => {
       groups:state.groups,
       quizes:state.quizes,
       users:state.users,
+      results:state.results
     }
   }
 const mapDispatchToProps = dispatch => ({
@@ -54,17 +73,32 @@ const mapDispatchToProps = dispatch => ({
     postDeleteGroup: (id) => dispatch(postDeleteGroup(id)),
     postQuiz: (name,items) => dispatch(postQuiz(name,items)),
     postUpdateQuiz: (id,name,items) => dispatch(postUpdateQuiz(id,name,items)),
+    postDelete: (id) => dispatch(postDelete(id)),
     postUser: (username,password) => dispatch(postUser(username,password)),
     postUpdateUser:(username,id) => dispatch(postUpdateUser(username,id)),
     postUpdatePassword: (password,id) => dispatch(postUpdatePassword(password,id)),
     postDeleteUser: (id) => dispatch(postDeleteUser(id)),
+    postSendToPart: (id,quiz_id) => dispatch(postSendToPart(id,quiz_id)),
+    postSendToGroup: (id,quiz_id) => dispatch(postSendToGroup(id,quiz_id)),
+
+    postQandA: (access_code) => dispatch(postQandA(access_code)),
+    postStart: (access_code) => dispatch(postStart(access_code)),
+    postFinish: (access_code) => dispatch(postFinish(access_code)),
+    postGender: (access_code,gender) => dispatch(postGender(access_code,gender)),
+    postAge : (access_code,age) => dispatch(postAge(access_code,age)),
+    postEduLevel: (access_code,educational_level) => dispatch(postEduLevel(access_code,educational_level)),
+    postCurSchool: (access_code,current_school) => dispatch(postCurSchool(access_code,current_school)),
+    postHighEdu: (access_code,highest_education) => dispatch(postHighEdu((access_code,highest_education))),
+    postTextQ: (access_code,survey_item_id,answer) => dispatch(postTextQ((access_code,survey_item_id,answer))),
+    postOptionQ: (access_code,survey_item_id,survey_item_option_id) => dispatch(postOptionQ(access_code,survey_item_id,survey_item_option_id)),
 
     fetchProfile: () => { dispatch(fetchProfile())},
     fetchLOGOUT : () => {dispatch(fetchLOGOUT())},
     fetchParticipants: () =>{ dispatch(fetchParticipants())},
     fetchGroups: () => {dispatch(fetchGroups())},
     fetchQuizes: () => {dispatch(fetchQuizes())},
-    fetchUsers: () => {dispatch(fetchUsers())}
+    fetchUsers: () => {dispatch(fetchUsers())},
+    fetchResults: () => {dispatch(fetchResults())}
 });
 
 
@@ -81,6 +115,7 @@ class Main extends Component {
         this.props.fetchGroups();
         this.props.fetchQuizes();
         this.props.fetchUsers();
+        this.props.fetchResults();
     }
 
     render(){
@@ -99,7 +134,9 @@ class Main extends Component {
                         errMess={this.props.groups.errMess}
                         fetchLOGOUT = {this.props.fetchLOGOUT}
                         list={this.props.list}
-                        postUpdateGroup={this.props.postUpdateGroup} />
+                        quizes={this.props.quizes}
+                        postUpdateGroup={this.props.postUpdateGroup}
+                        postSendToGroup={this.props.postSendToGroup} />
                 </>
             )
         }
@@ -138,7 +175,8 @@ class Main extends Component {
                     <Questions 
                         fetchLOGOUT = {this.props.fetchLOGOUT}
                         postQuiz = {this.props.postQuiz}
-                        Quizes = {this.props.quizes}/>
+                        Quizes = {this.props.quizes}
+                        postDelete={this.props.postDelete}/>
                 </>
             )
         }
@@ -187,14 +225,17 @@ class Main extends Component {
                         postGroup = {this.props.postGroup}
                         fetchLOGOUT = {this.props.fetchLOGOUT}
                         list={this.props.list}
-                        postDeleteGroup={this.props.postDeleteGroup} />
+                        postDeleteGroup={this.props.postDeleteGroup}
+                        quizes={this.props.quizes}
+                        postSendToGroup={this.props.postSendToGroup}  />
                 </>
             )
         }
         const ChartPage = () => {
             return(
                 <>  
-                    <Charts fetchLOGOUT = {this.props.fetchLOGOUT} />
+                    <Charts fetchLOGOUT = {this.props.fetchLOGOUT}
+                    results={this.props.results} />
                 </>
             )
         }
@@ -204,13 +245,25 @@ class Main extends Component {
                     postParticipant={this.props.postParticipant}
                     postUpdatePart={this.props.postUpdatePart}
                     postDeletePart={this.props.postDeletePart} 
-                    fetchLOGOUT = {this.props.fetchLOGOUT} />
+                    fetchLOGOUT = {this.props.fetchLOGOUT}
+                    quizes={this.props.quizes}
+                    postSendToPart={this.props.postSendToPart} />
             )
         }
         const SurveyPage = ({match}) =>{
             return(
                 <Survey token = {match.params.token}
-                postStartSurvey={this.props.postStartSurvey} />
+                    postQandA = {this.props.postQandA}
+                    postStart={this.props.postStart}
+                    postFinish={this.props.postFinish}
+                    postGender={this.props.postGender}
+                    postAge={this.props.postAge}
+                    postEduLevel={this.props.postEduLevel}
+                    postCurSchool={this.props.postCurSchool}
+                    postHighEdu={this.props.postHighEdu}
+                    postTextQ={this.props.postTextQ}
+                    postOptionQ={this.props.postOptionQ}
+                 />
             )
         }
         

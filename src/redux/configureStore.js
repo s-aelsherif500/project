@@ -8,6 +8,7 @@ import {Groups} from './Groups';
 import {Quizes} from './Quizes';
 import {Users} from './Users';
 import {Profile} from './Profile';
+import {Results} from './Results';
 
 export const ConfigureStore = () => {
     console.log(Auth)
@@ -18,6 +19,7 @@ export const ConfigureStore = () => {
             groups:Groups,
             quizes:Quizes,
             users:Users,
+            results:Results,
             ...createForms({
             })
         }),

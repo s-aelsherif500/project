@@ -45,7 +45,7 @@ class EditModal extends Component {
   render(){
     return (
       <div>
-        <Button color="primary" onClick={this.toggleModal} className="btn"><i className="fa fa-pencil"></i>{this.state.buttonLabel}Edit</Button>
+        <Button color="primary" onClick={this.toggleModal} type="button"><i className="fa fa-pencil"></i>{this.state.buttonLabel}Edit</Button>
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal} className={this.state.className}>
           <ModalHeader toggle={this.toggleModal}>Edit Member</ModalHeader>
           <ModalBody>

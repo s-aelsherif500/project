@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label} from 'reactstrap';
-import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input,Row, Col, Label} from 'reactstrap';
+import { LocalForm } from 'react-redux-form';
 class AddModal extends Component {
   constructor(props){
     super(props)
@@ -42,19 +42,19 @@ class AddModal extends Component {
               <Row className="form-group">
                 <Label for="FirstName" md={12}>First Name</Label>
                 <Col md={12}>
-                  <Control.text model=".first_name" name="first_name" id="FirstName" placeholder="Enter first Name" onChange={this.handleChange} value={this.state.firstName} />
+                  <Input model=".first_name" name="first_name" id="FirstName" placeholder="Enter first Name" onChange={this.handleChange} value={this.state.firstName} />
                 </Col>
               </Row>
               <Row className="form-group">
                 <Label for="LastName" md={12}>Last Name</Label>
                 <Col md={12}>
-                  <Control.text model=".first_name" name="last_name" id="LastName" placeholder="Enter last name" onChange={this.handleChange} value={this.state.lastName} />
+                  <Input name="last_name" id="LastName" placeholder="Enter last name" onChange={this.handleChange} value={this.state.lastName} />
                 </Col>
               </Row>
               <Row className="form-group">
                   <Label for="exampleEmail" md={12}>Email</Label>
                   <Col md={12}>
-                    <Control.text model=".email" name="email" id="exampleEmail" placeholder="Enter Email" onChange={this.handleChange} value={this.state.email} />
+                    <Input name="email" id="exampleEmail" placeholder="Enter Email" onChange={this.handleChange} value={this.state.email} />
                   </Col>
               </Row>
               <Button type="submit" color="success" style={{marginLeft:0}}>+ Add</Button>{' '}

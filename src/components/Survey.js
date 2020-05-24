@@ -13,50 +13,46 @@ class Survey extends Component {
             start:true,
             survey:new Array(),
             hovered:false,
-            token:this.props.token,//this.props.token
-            answers:[
-            {
-                gender:"not selected"
+            token:"1682910431590190697132",//this.props.token
+            answers:new Array(),
+            answersV: [{
+                "id":"",
+                "type":"",
+                "text":"",
+                "answer":""
             },{
-                age:"unknown"
+                "id":"",
+                "type":"",
+                "text":"",
+                "answer":""
             },{
-                eduLevel:"not selected"
+                "id":"",
+                "type":"",
+                "text":"",
+                "answer":""
             },{
-                curSchool:"not selected"
-            },{
-                highEdu:"not selected"
+                "id":"",
+                "type":"",
+                "text":"",
+                "answer":""
             }],
-            answersV: new Array(),
             participant:"",
             gender:"",
             age:"",
             eduLevel:"",
             curSchool:"",
             other_crrScholl:"",
-            highEdu:"",
-            quiz_name:"",
-            finish:""
+            highEdu:""
         }
     }
     componentDidMount(){
         this.props.postQandA(this.state.token)
         .then(response=>{
-
             console.log(response)
             this.setState({
                 survey:response.data.survey.items,
-                participant:response.data.participant.first_name,
+                participant:response.data.participant.first_name
             })
-            response.data.survey.items.map((question,index)=>{
-                let q =  {
-                    id:question.id,
-                    type:question.type,
-                    answer:""
-                }
-                this.setState({
-                    answersV:[...this.state.answersV,q]
-                })
-            }) 
         })
     }
     handleStart(e){
@@ -68,82 +64,46 @@ class Survey extends Component {
 
         })
         this.setState({
-            gender:e.target.value,
             answersV:new Array(this.state.survey.length)
         })
     }
     handleSurvey(e){
-        localStorage.setItem("highEdu",this.state.answers[4].highEdu)
-        this.props.postGender(this.state.token,this.state.answers[0].gender)
-        this.props.postAge(this.state.token,this.state.answers[1].age)
-        this.props.postEduLevel(this.state.token,this.state.answers[2].eduLevel)
-        this.props.postCurSchool(this.state.token,this.state.answers[3].curSchool)
-        this.props.postHighEdu(this.state.token,this.state.answers[4].highEdu)
-        .then((response)=>{
-            this.setState({
-                start:false,
-                generalQ:false,
-                surveyQA:true
-            })
+        console.log("CLICKED")
+        this.setState({
+            surveyQA:true,
+            start:false,
+            generalQ:false
         })
-    }
-    
-    handleChangeV(e){
-        console.log(e.target.id, e.target.id.indexOf("-"), e.target.type )
-        if (e.target.id.indexOf("-") >= 0){ //ex: 1-3
-            let a = e.target.id
-            a = a.split("").reverse().join("");
-            a = a.slice(2,a.length)
-            var emoji;
-            if (e.target.value=="1"){
-                emoji="&#128542;"
-            }else if(e.target.value=="2"){
-                emoji="&#128528;"
-            }else if(e.target.value=="2"){
-                emoji="&#128515;"
-            }else if(e.target.value=="2"){
-                emoji="&#128513;"
-            }else if(e.target.value=="2"){
-                emoji="&#128522;"
-            }
+        console.log(this.state.surveyQA)
+        console.log(this.state.survey)
+        this.state.survey.map((question,index) => {
+            console.log(index)
             this.setState(update(this.state, {
                 answersV: {
-                    [e.target.name]: {
+                    [index]: {
                         $set: {
-                            "id":a,
-                            "type":e.target.type,
-                            "answer":e.target.value,
-                            "emoji":emoji
-                        }    
-                    }
-                }
-            }))
-        } else if( (e.target.id.indexOf("-") == -1) && (e.target.type=="radio")){
-            console.log(e.target.id)
-            this.setState(update(this.state, {
-                answersV: {
-                    [e.target.name]: {
-                        $set: {
-                            "id":e.target.id,
-                            "type":e.target.type,
-                            "answer":e.target.id
-                        }
-                    }
-                }
-            }))
-        } else if(e.target.type=="text") {
-            this.setState(update(this.state, {
-                answersV: {
-                    [e.target.name]: {
-                        $set: {
-                            "id":e.target.id,
-                            "type":e.target.type,
+                            "id":question.id,
+                            "type":question.type,
+                            "text":question.text,
                             "answer":e.target.value
                         }
                     }
                 }
             }))
-        }
+        })   
+    }
+    handleChangeV(e){
+        console.log(e.target)
+        this.setState(update(this.state, {
+            answersV: {
+                [e.target.name]: {
+                    $set: {
+                        "id":e.target.id,
+                        "type":e.target.type,
+                        "answer":e.target.value}
+                    }
+            }
+        }))
     }
     handleChange(e){
         this.setState(update(this.state, {
@@ -153,48 +113,26 @@ class Survey extends Component {
                 }
             }
         }))
-        console.log(this.state.answers)
-        localStorage.setItem("answers",this.state.answers)
     }
 
-    handleSubmit(e){
-        var variableAnswers= new Array;
-        this.state.answersV.map((answer,index)=>{
-            variableAnswers.push({
-                id: this.state.survey[index].id,
-                answer:answer.answer
-            })
-        })
-
+    handleSubmit(){
+/*       
+        postTextQ={this.props.postTextQ}
+        postOptionQ={this.props.postOptionQ}
+*/
         console.log(this.state.answers)
-        console.log(variableAnswers)
-
-       variableAnswers.map((q,index) =>{
-           if(this.state.survey[index].type=="text" || this.state.survey[index].type=="agree" ){
-               this.props.postTextQ(this.state.token,q.id,q.answer)
-           }else if(this.state.survey[index].type=="options"){
-               this.props.postOptionQ(this.state.token,q.id,q.answer)
-           }
-       })
-       
        this.props.postFinish(this.state.token)
-       .then(()=>{
-           this.setState({
-                start:false,
-                generalQ:false,
-                surveyQA:false,
-                finish:true
-           })
-       }
-       )
+       this.props.postGender(this.state.answers[0].gender)
+       this.props.postAge(this.state.answers[1].age)
+       this.props.postEduLevel(this.state.answers[2].eduLevel)
+       this.props.postCurSchool(this.state.answers[3].curSchool)
+       this.props.postHighEdu(this.state.answers[4].highEdu)
 
     }
     render(){
-        console.log(this.state.answers[4].highEdu)
         console.log("All State : ",this.state)
-        /*this.setState({
-            surveyQA:true
-        })*/
+        console.log(this.state.surveyQA)
+        this.set
         if (this.state.start){
             return(
                 <> 
@@ -239,7 +177,6 @@ class Survey extends Component {
                                     <Label md={5} for={0}><b>A1-</b>lk ben een:</Label>
                                     <Col md={3}>
                                         <Input type="select" name="gender" id={0} onChange={(e)=>this.handleChange(e)}>
-                                            <option value="not selected">Select..</option>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
                                             <option value="other">Other</option>
@@ -260,7 +197,6 @@ class Survey extends Component {
                                     <Label md={12} for={2}><b>A3-</b>WELK OPLEIDINGSNIVEAU DOE JE OP DIT MOMENT?</Label>
                                     <Col md={10}>
                                         <Input type="select" name="eduLevel" id={2} onChange={(e) => this.handleChange(e)}>
-                                            <option value="not selected">Select..</option>
                                             <option value="praktijkschool">praktijkschool</option>
                                             <option value="entreeopleiding">entreeopleiding</option>
                                             <option value="VMBO KB">VMBO KB</option>
@@ -279,7 +215,6 @@ class Survey extends Component {
                                     <Label md={12} for={3}><b>A4-</b>OP WELKE SCHOOL ZIT JE MOMENTEEL?</Label>
                                     <Col md={10}>
                                         <Input type="select" name="curSchool" id={3} onChange={(e) => this.handleChange(e)}>
-                                            <option value="not selected">Select..</option>
                                             <option value="praktijkschool Terra Nigra">praktijkschool Terra Nigra</option>
                                             <option value="VO Bernard Lievegoed School">VO Bernard Lievegoed School</option>
                                             <option value="VO Bonnefanten College">VO Bonnefanten College</option>
@@ -301,7 +236,6 @@ class Survey extends Component {
                                     <Label md={12} for={4}><b>A5-</b>WAT IS HET HOOGSTE OPLEIDINGSNIVEAU DAT JE HEBT AFGEROND MET EEN DIPLOMA?</Label>
                                     <Col md={10}>
                                         <Input type="select" name="highEdu" id={4} onChange={(e) => this.handleChange(e)}>
-                                            <option value="not selected">Select..</option>
                                             <option value="ik heb (nog) geen diploma"> ik heb (nog) geen diploma </option>
                                             <option value="praktijkschool">praktijkschool</option>
                                             <option value="entreeopleiding">entreeopleiding</option>
@@ -319,7 +253,7 @@ class Survey extends Component {
                                 <hr/>
                             </Form>
                             <Button color = "success" type="button" onClick={(e) => this.handleSurvey(e)}>
-                                Ga naar de enquête</Button>
+                                Go to Survey -></Button>
                         </Jumbotron>
                     </div>
                 </>
@@ -338,14 +272,13 @@ class Survey extends Component {
                             <Form>
                                 {
                                     this.state.survey.map(question =>{
-                                        console.log(question)
                                         count+=1;
                                         if(question.type=="text"){
                                             return(
                                                 <FormGroup>
                                                     <Label for={question.id}><b>{count}-</b> {question.text}</Label>
                                                     <Input id={question.id} onChange={(e) => this.handleChangeV(e)}
-                                                     name={count-1} placeholder="Answer this Question"/>
+                                                    value={this.state.answersV[count-1].answer} name={count-1} placeholder="Answer this Question"/>
                                                 </FormGroup>
                                             )
                                         } else if(question.type=="agree") {
@@ -354,66 +287,32 @@ class Survey extends Component {
                                                 <Label md={12}><b>{count}-</b> {question.text}</Label>
                                                 <Col md={12}>
                                                 <Rating
-                                                
                                                     name={count-1}
                                                     id = {question.id}
-                                                    size="large"
+                                                    value={this.state.answersV[count-1].answer}
                                                     onChange={(e) => this.handleChangeV(e)}
                                                     />
                                                 </Col>
+                                                <p style={{fontSize:100}} >&#128513;</p>
                                             </Row>
                                             )
-                                        } else if (question.type=="options"){
+                                        } else if (question.type=="option"){
                                             return(
-                                                <Row className="form-group">
-                                                    <Label md={12}><b>{count}-</b> {question.text}</Label>
-                                                    <Col md={12}>
-                                                        {
-                                                            question.options.map((option)=>{
-                                                                return(
-                                                                    <>
-                                                                        <Label md={{offset:1}} check>
-                                                                            <Input type="radio" name={count-1} value={option.option} id={option.id}
-                                                                             onChange={(e) => this.handleChangeV(e)}  />{' '}
-                                                                                {option.option}
-                                                                        </Label>
-                                                                        <br/>
-                                                                    </>
-                                                                )
-                                                            })
-                                                        }
-                                                    </Col>
-                                                </Row>
+                                                <FormGroup>
+                                                    <Label for={question.id}>{question.text}</Label>
+                                                    <Input id={question.id} placeholder="Answer this Question"/>
+                                                </FormGroup>
                                             )
                                         }
                                     })
                                 }
                             </Form>
-                            <Button type="button" onClick={(e) => this.handleSubmit(e)} color="success">Voltooien en indienen </Button>
                         </Jumbotron>
                     </div>                        
                 </>
 
                 )    
-        } else if (this.state.finish){
-            return(
-                <> 
-                    <div className="form-paper">
-                        <h1>MDT Quastionaire</h1>
-                        <hr/>
-                        <Jumbotron>
-                            <div className="container">
-                                <p className="intro">
-                                    <h2>Bedankt voor het invullen van de vragenlijst !</h2> 
-                                </p>    
-                            </div>
-        
-                        </Jumbotron>
-                    </div>
-                </>
-            )   
-        }
-        else {
+        } else {
             return(
                 <> 
                     <div className="form-paper">

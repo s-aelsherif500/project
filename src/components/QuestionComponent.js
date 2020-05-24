@@ -338,49 +338,65 @@ function CreateQuiz({postQuiz}) {
         </div>
     )
 }
-function RenderQuizes ({Quizes}) {
-    if (Quizes.isLoading) {
-        return(
-            <>
-                <Loading />
-            </> 
+class RenderQuizes extends Component  {
+    constructor(props){
+        super(props)
+        this.state={
+        }
+    }
+    deleteQuiz(e){
+        let id = e.target.id
+        this.props.postDelete(id)
+        .then(
+            window.location.href='/quizes'
         )
-    }else if (Quizes.errMess) {
-        return(
-            <>
-                <h2 className="text-danger">{Quizes.errMess}</h2>
-            </>
-        )
-    }else {
-        const quizes = Quizes.quizes.data.map((quiz) =>{
-            return(
-                <>
-                    <Card id = {quiz.id} style={{margin:10, textAlign:"center"}}>
-                        <CardBody>
-                            <CardTitle style={{fontWeight:"bold",
-                                            fontSize:20}}>{quiz.name}</CardTitle>
-                                            <hr/>
-                            <CardText>
-                                <h5><b>Created at: </b>{quiz.created_at}.</h5>
-                                <h5><b>Updated at: </b>{quiz.updated_at}.</h5>
-                            </CardText>
+    }
+    render(){
+        let Quizes=this.props.Quizes
+            if (Quizes.isLoading) {
+                return(
+                    <>
+                        <Loading />
+                    </> 
+                )
+            }else if (Quizes.errMess) {
+                return(
+                    <>
+                        <h2 className="text-danger">{Quizes.errMess}</h2>
+                    </>
+                )
+            }else {
+                const quizes = Quizes.quizes.data.map((quiz) =>{
+                    return(
+                        <>
+                            <Card id = {quiz.id} style={{margin:10, textAlign:"center"}}>
+                                <CardBody>
+                                    <CardTitle style={{fontWeight:"bold",
+                                                    fontSize:20}}>{quiz.name}</CardTitle>
+                                                    <hr/>
+                                    <CardText>
+                                        <h5><b>Created at: </b>{quiz.created_at}.</h5>
+                                        <h5><b>Updated at: </b>{quiz.updated_at}.</h5>
+                                    </CardText>
+                                    <br/>
+                                    <hr/>
+                                    <Button color="danger" id={quiz.id} type="button" onClick={(e)=>this.deleteQuiz(e)}><i className="fa fa-trash"></i> Delete</Button><br/>
+                                    <Link to={`/quizes/${quiz.id}`}>Show Quiz</Link>
+                                </CardBody>
+                            </Card>
                             <br/>
-                            <hr/>
-                            <Link to={`/quizes/${quiz.id}`}>Show Quiz</Link>
-                        </CardBody>
-                    </Card>
-                    <br/>
-                </>
-            )
-        })
-        return(
-                <>
-                    {quizes}
-                </>
-            )
+                        </>
+                    )
+                })
+            return(
+                    <>
+                        {quizes}
+                    </>
+                )
+        }
     }
 }
-function FinalRender({ fetchLOGOUT, Quizes, postQuiz}) {
+function FinalRender({ fetchLOGOUT, Quizes, postQuiz, postDelete}) {
     const Auth = localStorage.getItem("token")
     if (Auth!="null"){
         return(
@@ -395,7 +411,7 @@ function FinalRender({ fetchLOGOUT, Quizes, postQuiz}) {
                                 <div className="col-12">
                                     <CreateQuiz postQuiz={postQuiz} />
                                     <div className="d-flex justify-content-center flex-wrap">  
-                                        <RenderQuizes Quizes={Quizes} />
+                                        <RenderQuizes Quizes={Quizes} postDelete={postDelete} />
                                     </div>
                                 </div>
                             </div>
@@ -418,10 +434,11 @@ function FinalRender({ fetchLOGOUT, Quizes, postQuiz}) {
         )
     }
 }
-const Questions= ({fetchLOGOUT,postQuiz, Quizes}) => {
+const Questions= ({fetchLOGOUT,postQuiz, Quizes, postDelete}) => {
     return(
         <>
             <FinalRender 
+            postDelete={postDelete}
                 fetchLOGOUT={fetchLOGOUT}
                 Quizes={Quizes}
                 postQuiz={postQuiz} />

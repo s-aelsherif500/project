@@ -7,7 +7,16 @@ import {Link} from 'react-router-dom'
 import Info from './InfoModal';
 import AddGroup from './Modals/AddGroup'
 import { Loading } from './LoadingComponent';
-
+import SendToGroup from './Modals/SendToGroup'
+/*
+    <Button type="button" md={12} color="primary" name={group.id}>
+        <Link to={`/groups/${group.id}`}
+            style={{color:"white",textDecoration:"none"}}>
+            <i className="fa fa-pencil"></i>
+                Edit
+        </Link>
+    </Button>
+*/
 class RenderGroups extends Component {
     constructor(props){
         super(props)
@@ -55,13 +64,7 @@ class RenderGroups extends Component {
                                         <i className="fa fa-trash"></i>
                                         Delete
                                     </Button>
-                                    <Button type="button" md={12} color="primary" name={group.id}>
-                                        <Link to={`/groups/${group.id}`}
-                                            style={{color:"white",textDecoration:"none"}}>
-                                            <i className="fa fa-pencil"></i>
-                                                Edit
-                                        </Link>
-                                    </Button>    
+                                    <SendToGroup id={group.id} postSendToGroup={this.props.postSendToGroup} quizes={this.props.quizes} />    
                                 </ButtonGroup>
                             </CardBody>
                         </Card>
@@ -77,7 +80,7 @@ class RenderGroups extends Component {
         }
     }
 }
-function FinalRender({Auth, fetchLOGOUT, Groups, all_participants, postGroup, postDeleteGroup}) {
+function FinalRender({Auth, fetchLOGOUT, quizes, postSendToGroup, Groups, all_participants, postGroup, postDeleteGroup}) {
     console.log(typeof(Auth))
     if (Auth!="null"){
         return(
@@ -90,7 +93,10 @@ function FinalRender({Auth, fetchLOGOUT, Groups, all_participants, postGroup, po
                     <AddGroup buttonLabel={'+ Add Group'} all_participants={all_participants} postGroup={postGroup} />
                     <br/><br/>
                     <div className="d-flex justify-content-center flex-wrap">   
-                        <RenderGroups Groups={Groups} postDeleteGroup={postDeleteGroup} />
+                        <RenderGroups Groups={Groups}
+                         quizes={quizes} 
+                         postSendToGroup={postSendToGroup}
+                         postDeleteGroup={postDeleteGroup} />
                     </div>
                     </Jumbotron>
                 </div>
@@ -126,6 +132,8 @@ class Group extends Component {
                     Groups={this.state.Groups}
                     all_participants={this.props.list}
                     postGroup={this.props.postGroup} 
+                    quizes={this.props.quizes}
+                    postSendToGroup={this.props.postSendToGroup}
                     postDeleteGroup={this.props.postDeleteGroup}/>
             </>
         )

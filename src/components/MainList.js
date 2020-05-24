@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Button, ButtonGroup} from 'reactstrap';
+import { Button, ButtonGroup, Modal} from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import {Link} from 'react-router-dom'
 import Header from './HeaderComponent';
 import { Loading } from './LoadingComponent';
 import EditModal from './Modals/EditModal';
-import AddModal from './Modals/AddModal'
-//import DeleteModal from './Modals/DeleteModal'
+import AddModal from './Modals/AddModal';
+import SendToPart from './Modals/SendToPart';
 
-  
+
 class RenderList extends Component {
     constructor(props){
         super(props)
@@ -51,6 +51,7 @@ class RenderList extends Component {
         else {
             let count = 0;
             console.log(props)
+            console.log(this.props.quizes)
             const Table = (props.list.data.length==0)? "Empty": props.list.data.map((person)=>{
                 console.log(person.__meta__.surveys_count)
                 let id = person.id;
@@ -63,11 +64,10 @@ class RenderList extends Component {
                         <td>{person.email}</td>      
                         <td>
                             <ButtonGroup>
-                                <Button id={person.id} color="warning" type="button">
-                                    <i className="fa fa-paper-plane" aria-hidden="true"></i>
-                                    Send
-                                </Button>
-                                <Button id={person.id} color="danger" name={id} type="button" onClick={(e) => this.deletePart(e)}
+                                <SendToPart quizes={this.props.quizes} id={person.id} 
+                                postSendToPart={this.props.postSendToPart}/>
+                                <Button id={person.id} color="danger" name={id} 
+                                    type="button" onClick={(e) => this.deletePart(e)}
                                         disabled={(person.__meta__.surveys_count != 0)? true : false} >
                                     <i className="fa fa-trash"></i>
                                     Delete
@@ -109,7 +109,7 @@ class RenderList extends Component {
         }
     }
 }
-function FinalRender({Auth, fetchLOGOUT, props, postParticipant,postUpdatePart, postDeletePart}) {
+function FinalRender({Auth, fetchLOGOUT, quizes, props,postSendToPart, postParticipant,postUpdatePart, postDeletePart}) {
     console.log(typeof(Auth),"",props)
     if (Auth!="null"){
         return(
@@ -121,6 +121,8 @@ function FinalRender({Auth, fetchLOGOUT, props, postParticipant,postUpdatePart, 
                     <br/>
                     <div className="container-list table-responsive">
                         <RenderList props={props} 
+                            quizes={quizes}
+                            postSendToPart={postSendToPart}
                             postParticipant = {postParticipant}
                             postUpdatePart = {postUpdatePart}
                             postDeletePart={postDeletePart} />
@@ -154,6 +156,8 @@ class MainList extends Component {
         return(
             <FinalRender Auth={this.state.Auth}
                 props={this.props.list}
+                quizes={this.props.quizes}
+                postSendToPart={this.props.postSendToPart}
                 postUpdatePart={this.props.postUpdatePart}
                 postParticipant={this.props.postParticipant}
                 postDeletePart={this.props.postDeletePart}

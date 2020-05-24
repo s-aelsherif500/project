@@ -492,6 +492,42 @@ export const postUpdateQuiz= (id, Qname, items) => (dispatch) => {
     .then(response => response.json())
     .catch(error => console.log(error.message));
 };
+/*------------------------------------Delete Quiz -------------------------------------*/
+export const postDelete= (id) => (dispatch) => {
+  console.log("DELETE QUIZ")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+  var raw = JSON.stringify(
+    {
+      "id":id
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.deleteQuiz, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
 
 /*------------------------------------FETCH ALL USERS----------------------------------*/
 export const fetchUsers = () => (dispatch) => {
@@ -672,3 +708,462 @@ export const postDeleteUser= (id) => (dispatch) => {
     .then(response => response.json())
     .catch(error => console.log(error.message));
 };
+/*---------------------------------Post Send Survey to Part-------------------------------------*/
+export const postSendToPart= (id,quiz_id) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+  var raw = JSON.stringify(
+    {
+      "id":id,
+      "quiz_id":quiz_id
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.sendPart, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+
+/*---------------------------------Post Send Survey to Group-------------------------------------*/
+export const postSendToGroup= (id,quiz_id) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+  var raw = JSON.stringify(
+    {
+      "id":id,
+      "quiz_id":quiz_id
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.sendGroup, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+
+/*---------------------------------Post Q and A-------------------------------------*/
+export const postQandA= (access_code) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify(
+    {
+      "access_code":access_code
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.QandA, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+
+/*---------------------------------Post Start-------------------------------------*/
+export const postStart= (access_code) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify(
+    {
+      "access_code":access_code
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.start, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+
+/*---------------------------------Post Finish-------------------------------------*/
+export const postFinish= (access_code) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify(
+    {
+      "access_code":access_code
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.finish, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*---------------------------------Post Answer Gender -------------------------------------*/
+export const postGender= (access_code,gender) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify(
+    {
+      "access_code":access_code,
+      "gender":gender
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.gender, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*---------------------------------Post Answer Age -------------------------------------*/
+export const postAge= (access_code,age) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify(
+    {
+      "access_code":access_code,
+      "age":age
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.age, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*---------------------------------Post Answer Education level -------------------------------------*/
+export const postEduLevel= (access_code,educational_level) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify(
+    {
+      "access_code":access_code,
+      "educational_level":educational_level
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.eduLevel, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+
+/*---------------------------------Post Current School -------------------------------------*/
+export const postCurSchool= (access_code,current_school) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify(
+    {
+      "access_code":access_code,
+      "current_school":current_school
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.curSchool, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*---------------------------------Post High Education -------------------------------------*/
+export const postHighEdu= (access_code,highest_education) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  console.log(localStorage.getItem("highEdu"), String(localStorage.getItem("highEdu")),access_code)
+  
+  var raw = JSON.stringify(
+    {
+      "access_code":String(access_code),
+      "highest_education":"Master"
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch("http://127.0.0.1:3333/api/v1/survey/highest_education", requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*---------------------------------Post Text Question -------------------------------------*/
+export const postTextQ= (access_code,survey_item_id,answer) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify(
+    {
+      "access_code":access_code,
+      "survey_item_id":survey_item_id,
+      "answer":answer
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.textQ, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/*---------------------------------Post Option Question -------------------------------------*/
+export const postOptionQ= (access_code,survey_item_id,survey_item_option_id) => (dispatch) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify(
+    {
+      "access_code":access_code,
+      "survey_item_id":survey_item_id,
+      "survey_item_option_id":survey_item_option_id
+    });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return fetch(baseURL.optionQ, requestOptions)
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .catch(error => console.log(error.message));
+};
+/* --------------------------------Fetch Results----------------------------  */
+export const fetchResults = () => (dispatch) => {
+  dispatch(resultsLoading())
+  console.log("fetching results")
+  var myHeaders = new Headers();
+  myHeaders.append("Accept", "application/json");
+  myHeaders.append("Authorization", `${localStorage.getItem("bearer")} ${localStorage.getItem("token")}`);
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch(baseURL.surveys, requestOptions)
+    .then(response => response.json())
+    .then(response => dispatch(getResults(response)))
+    .then(response => console.log(response.payload))
+    .catch(error => dispatch(resultsFailed(error.message)));
+}
+export const getResults = (response) =>({
+  type: ActionTypes.GET_RESULTS,
+  payload:response
+})
+export const resultsFailed = (errmess) =>({
+  type: ActionTypes.RESULTS_FAILED,
+  payload:errmess
+})
+export const resultsLoading = () =>({
+  type: ActionTypes.RESULTS_LOADING
+})
